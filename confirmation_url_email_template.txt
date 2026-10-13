@@ -1,0 +1,4 @@
+      <p>Thanks for signing up! Please use the code above to confirm your email address in the app. If you're on a device that supports it, you can also click the link below to verify directly:</p>
+      <p style="text-align: center;">
+        <a href="{{ .ConfirmationURL }}" style="display: inline-block; background-color: #4A90E2; color: #fff; padding: 12px 20px; border-radius: 5px; text-decoration: none;">Confirm Email</a>
+      </p>

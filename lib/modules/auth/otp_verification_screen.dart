@@ -1,0 +1,617 @@
+// otp_verification_screen.dart
+// Screen for entering and verifying the 6-digit OTP code
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mvc_app/app_theme.dart';
+import 'package:mvc_app/modules/auth/auth_bloc.dart';
+import 'package:mvc_app/modules/auth/auth_event.dart';
+import 'package:mvc_app/modules/auth/auth_state.dart';
+
+class OtpVerificationScreen extends StatefulWidget {
+  final String email;
+  final String otpType;
+
+  const OtpVerificationScreen({
+    super.key,
+    required this.email,
+    this.otpType = 'signup',
+  });
+
+  @override
+  State<OtpVerificationScreen> createState() => _OtpVerificationScreenState();
+}
+
+class _OtpVerificationScreenState extends State<OtpVerificationScreen>
+    with TickerProviderStateMixin {
+  final List<TextEditingController> _controllers = List.generate(
+    6,
+    (index) => TextEditingController(),
+  );
+  final List<FocusNode> _focusNodes = List.generate(6, (index) => FocusNode());
+
+  // Hidden controller for iOS autofill
+  final TextEditingController _hiddenController = TextEditingController();
+  final FocusNode _hiddenFocusNode = FocusNode();
+
+  late AnimationController _keyboardAnimationController;
+  late AnimationController _bounceAnimationController;
+  late Animation<double> _keyboardAnimation;
+  late Animation<double> _bounceAnimation;
+
+  bool _isKeyboardVisible = false;
+
+  String get otpCode => _controllers.map((c) => c.text).join();
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Initialize animation controllers
+    _keyboardAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+
+    _bounceAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+
+    _keyboardAnimation = CurvedAnimation(
+      parent: _keyboardAnimationController,
+      curve: Curves.easeInOut,
+    );
+
+    _bounceAnimation = Tween<double>(begin: 1.0, end: 1.1).animate(
+      CurvedAnimation(
+        parent: _bounceAnimationController,
+        curve: Curves.elasticOut,
+      ),
+    );
+
+    // Listen to keyboard visibility
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _setupKeyboardListener();
+    });
+
+    // Setup hidden field for iOS autofill
+    _hiddenController.addListener(_onHiddenTextChanged);
+  }
+
+  void _setupKeyboardListener() {
+    final mediaQuery = MediaQuery.of(context);
+    final keyboardHeight = mediaQuery.viewInsets.bottom;
+
+    if (keyboardHeight > 0 && !_isKeyboardVisible) {
+      _isKeyboardVisible = true;
+      _keyboardAnimationController.forward();
+    } else if (keyboardHeight == 0 && _isKeyboardVisible) {
+      _isKeyboardVisible = false;
+      _keyboardAnimationController.reverse();
+    }
+  }
+
+  void _onHiddenTextChanged() {
+    final text = _hiddenController.text;
+    if (text.length <= 6) {
+      // Fill the visible controllers with the text
+      for (int i = 0; i < 6; i++) {
+        _controllers[i].text = i < text.length ? text[i] : '';
+      }
+
+      // Auto-submit when all 6 digits are entered
+      if (text.length == 6) {
+        _triggerBounceAnimation();
+        _verifyOtp();
+      }
+    }
+  }
+
+  void _triggerBounceAnimation() {
+    _bounceAnimationController.forward().then((_) {
+      _bounceAnimationController.reverse();
+    });
+  }
+
+  @override
+  void dispose() {
+    _keyboardAnimationController.dispose();
+    _bounceAnimationController.dispose();
+    _hiddenController.dispose();
+    _hiddenFocusNode.dispose();
+
+    for (var controller in _controllers) {
+      controller.dispose();
+    }
+    for (var focusNode in _focusNodes) {
+      focusNode.dispose();
+    }
+    super.dispose();
+  }
+
+  void _onOtpChanged(String value, int index) {
+    print("OTP $value");
+
+    // Update the hidden controller for iOS autofill
+    final currentOtp = otpCode;
+    if (currentOtp != _hiddenController.text) {
+      _hiddenController.text = currentOtp;
+    }
+
+    if (value.isNotEmpty && index < 5) {
+      _focusNodes[index + 1].requestFocus();
+    } else if (value.isEmpty && index > 0) {
+      _focusNodes[index - 1].requestFocus();
+    }
+
+    // Auto-submit when all 6 digits are entered
+    if (otpCode.length == 6) {
+      _triggerBounceAnimation();
+      _verifyOtp();
+    }
+  }
+
+  void _verifyOtp() {
+    if (otpCode.length == 6) {
+      context.read<AuthBloc>().add(
+        VerifyOtpEvent(
+          email: widget.email,
+          otpCode: otpCode,
+          otpType: widget.otpType,
+        ),
+      );
+    }
+  }
+
+  void _resendOtp() {
+    context.read<AuthBloc>().add(
+      ResendOtpEvent(email: widget.email, otpType: widget.otpType),
+    );
+  }
+
+  void _clearOtp() {
+    for (var controller in _controllers) {
+      controller.clear();
+    }
+    _hiddenController.clear();
+    _focusNodes[0].requestFocus();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Update keyboard visibility on rebuild
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _setupKeyboardListener();
+    });
+
+    return Scaffold(
+      backgroundColor: AppTheme.cardGreyBackground,
+      resizeToAvoidBottomInset: false, // Prevent automatic resizing
+      body: BlocConsumer<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is AuthSuccessState) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.green,
+              ),
+            );
+            // Navigation is now handled automatically by AuthBloc after OTP verification
+            // No need for manual navigation here - AuthBloc will emit NavigateToHomeEvent
+          }
+        },
+        builder: (context, state) {
+          final isLoading =
+              state is AuthPendingEmailConfirmationState && state.isLoading;
+          final errorMessage = state is AuthPendingEmailConfirmationState
+              ? state.errorMessage
+              : null;
+          final successMessage = state is AuthPendingEmailConfirmationState
+              ? state.successMessage
+              : null;
+
+          return Stack(
+            children: [
+              // Hidden text field for iOS autofill
+              Positioned(
+                left: -1000,
+                top: -1000,
+                child: SizedBox(
+                  width: 1,
+                  height: 1,
+                  child: TextField(
+                    controller: _hiddenController,
+                    focusNode: _hiddenFocusNode,
+                    keyboardType: TextInputType.number,
+                    maxLength: 6,
+                    autofillHints: const [AutofillHints.oneTimeCode],
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      counterText: '',
+                    ),
+                  ),
+                ),
+              ),
+
+              // Main content
+              SafeArea(
+                child: AnimatedBuilder(
+                  animation: _keyboardAnimation,
+                  builder: (context, child) {
+                    return Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          // Back button
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: IconButton(
+                              onPressed: () {
+                                // Navigate back to the login screen by dispatching NavigateToHomeEvent
+                                context.read<AuthBloc>().add(NavigateToHomeEvent());
+                              },
+                              icon: const Icon(
+                                Icons.arrow_back,
+                                color: AppTheme.black,
+                              ),
+                            ),
+                          ),
+
+                          // Animated spacing based on keyboard visibility
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            height: _isKeyboardVisible ? 20 : 40,
+                            curve: Curves.easeInOut,
+                          ),
+
+                          // Email verification icon with scale animation
+                          AnimatedScale(
+                            scale: _isKeyboardVisible ? 0.8 : 1.0,
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                            child: Container(
+                              width: 80,
+                              height: 80,
+                              decoration: BoxDecoration(
+                                color: AppTheme.accentPrimary.withOpacity(0.1),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.mail_outline,
+                                size: 40,
+                                color: AppTheme.accentPrimary,
+                              ),
+                            ),
+                          ),
+
+                          // Animated spacing
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            height: _isKeyboardVisible ? 16 : 32,
+                            curve: Curves.easeInOut,
+                          ),
+
+                          // Title with fade animation
+                          AnimatedOpacity(
+                            opacity: _isKeyboardVisible ? 0.8 : 1.0,
+                            duration: const Duration(milliseconds: 300),
+                            child: Text(
+                              'Verify Your Email',
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: _isKeyboardVisible ? 24 : 28,
+                                fontWeight: FontWeight.w600,
+                                color: AppTheme.black,
+                              ),
+                            ),
+                          ),
+
+                          // Animated spacing
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            height: _isKeyboardVisible ? 6 : 12,
+                            curve: Curves.easeInOut,
+                          ),
+
+                          // Subtitle with conditional visibility
+                          AnimatedOpacity(
+                            opacity: _isKeyboardVisible ? 0.0 : 1.0,
+                            duration: const Duration(milliseconds: 300),
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 300),
+                              height: _isKeyboardVisible ? 0 : null,
+                              child: !_isKeyboardVisible
+                                  ? Column(
+                                      children: [
+                                        Text(
+                                          'We\'ve sent a 6-digit verification code to',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.grey[600],
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          widget.email,
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                            color: AppTheme.accentPrimary,
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  : const SizedBox.shrink(),
+                            ),
+                          ),
+
+                          // Animated spacing
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            height: _isKeyboardVisible ? 20 : 40,
+                            curve: Curves.easeInOut,
+                          ),
+
+                          // Success message
+                          if (successMessage != null)
+                            AnimatedSlide(
+                              offset: const Offset(0, 0),
+                              duration: const Duration(milliseconds: 300),
+                              child: Container(
+                                padding: const EdgeInsets.all(12),
+                                margin: const EdgeInsets.only(bottom: 16),
+                                decoration: BoxDecoration(
+                                  color: Colors.green.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: Colors.green.withOpacity(0.3),
+                                  ),
+                                ),
+                                child: Text(
+                                  successMessage,
+                                  style: const TextStyle(
+                                    color: Colors.green,
+                                    fontSize: 14,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+
+                          // Error message
+                          if (errorMessage != null)
+                            AnimatedSlide(
+                              offset: const Offset(0, 0),
+                              duration: const Duration(milliseconds: 300),
+                              child: Container(
+                                padding: const EdgeInsets.all(12),
+                                margin: const EdgeInsets.only(bottom: 16),
+                                decoration: BoxDecoration(
+                                  color: Colors.red.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: Colors.red.withOpacity(0.3),
+                                  ),
+                                ),
+                                child: Text(
+                                  errorMessage,
+                                  style: const TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 14,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+
+                          // OTP input fields with bounce animation
+                          AnimatedBuilder(
+                            animation: _bounceAnimation,
+                            builder: (context, child) {
+                              return Transform.scale(
+                                scale: _bounceAnimation.value,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: List.generate(6, (index) {
+                                    return SizedBox(
+                                      width: 45,
+                                      height: 55,
+                                      child: TextField(
+                                        controller: _controllers[index],
+                                        focusNode: _focusNodes[index],
+                                        keyboardType: TextInputType.number,
+                                        textAlign: TextAlign.center,
+                                        maxLength: 1,
+                                        enabled: !isLoading,
+                                        autofillHints: const [
+                                          AutofillHints.oneTimeCode,
+                                        ],
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter
+                                              .digitsOnly,
+                                        ],
+                                        decoration: InputDecoration(
+                                          counterText: '',
+                                          filled: true,
+                                          fillColor: Colors.grey[100],
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                            borderSide: BorderSide(
+                                              color: Colors.grey[300]!,
+                                            ),
+                                          ),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                            borderSide: BorderSide(
+                                              color: Colors.grey[300]!,
+                                            ),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                            borderSide: const BorderSide(
+                                              color: AppTheme.accentPrimary,
+                                              width: 2,
+                                            ),
+                                          ),
+                                        ),
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        onChanged: (value) =>
+                                            _onOtpChanged(value, index),
+                                        onTap: () {
+                                          // Focus the hidden field for iOS autofill
+                                          _hiddenFocusNode.requestFocus();
+                                          Future.delayed(
+                                            const Duration(milliseconds: 100),
+                                            () {
+                                              _focusNodes[index].requestFocus();
+                                            },
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  }),
+                                ),
+                              );
+                            },
+                          ),
+
+                          // Animated spacing
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            height: _isKeyboardVisible ? 20 : 40,
+                            curve: Curves.easeInOut,
+                          ),
+
+                          // Verify button
+                          SizedBox(
+                            width: double.infinity,
+                            height: 50,
+                            child: ElevatedButton(
+                              onPressed: isLoading || otpCode.length != 6
+                                  ? null
+                                  : _verifyOtp,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppTheme.accentPrimary,
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                elevation: 0,
+                              ),
+                              child: isLoading
+                                  ? const SizedBox(
+                                      width: 24,
+                                      height: 24,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : Text(
+                                      'Verify Code',
+                                      style: const TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                            ),
+                          ),
+
+                          // Animated spacing
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            height: _isKeyboardVisible ? 12 : 24,
+                            curve: Curves.easeInOut,
+                          ),
+
+                          // Clear OTP button with conditional visibility
+                          AnimatedOpacity(
+                            opacity: _isKeyboardVisible ? 0.0 : 1.0,
+                            duration: const Duration(milliseconds: 300),
+                            child: TextButton(
+                              onPressed: isLoading ? null : _clearOtp,
+                              child: Text(
+                                'Clear Code',
+                                style: TextStyle(
+                                  color: Colors.grey[600],
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          const Spacer(),
+
+                          // Resend code section with conditional visibility
+                          AnimatedOpacity(
+                            opacity: _isKeyboardVisible ? 0.0 : 1.0,
+                            duration: const Duration(milliseconds: 300),
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 300),
+                              height: _isKeyboardVisible ? 0 : null,
+                              child: !_isKeyboardVisible
+                                  ? Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'Didn\'t receive the code? ',
+                                          style: TextStyle(
+                                            color: Colors.grey[600],
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                        TextButton(
+                                          onPressed: isLoading
+                                              ? null
+                                              : _resendOtp,
+                                          child: const Text(
+                                            'Resend',
+                                            style: TextStyle(
+                                              color: AppTheme.accentPrimary,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  : const SizedBox.shrink(),
+                            ),
+                          ),
+
+                          // Bottom spacing
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            height: _isKeyboardVisible ? 0 : 20,
+                            curve: Curves.easeInOut,
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}

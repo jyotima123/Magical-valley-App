@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "955630944633",
+    "project_id": "spencer-notifications",
+    "storage_bucket": "spencer-notifications.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:955630944633:android:9dda7e951c73af6e3e6fa8",
+        "android_client_info": {
+          "package_name": "com.magicvalleycentral.mvc_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-gSYIntz4n2b93iUK5huXYVt9kBeTJkI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:955630944633:android:9dda7e951c73af6e3e6fa8",
+        "android_client_info": {
+          "package_name": "com.magicvalleycentral.mvc_app.dev"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-gSYIntz4n2b93iUK5huXYVt9kBeTJkI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

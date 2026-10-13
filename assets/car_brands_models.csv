@@ -1,0 +1,584 @@
+brand,model,discontinued
+Acura,ADX,false
+Acura,Integra,false
+Acura,MDX,false
+Acura,NSX,true
+Acura,RDX,false
+Acura,RSX,false
+Acura,TLX,false
+Acura,ZDX,false
+Alfa Romeo,Giulia,false
+Alfa Romeo,Stelvio,false
+Alfa Romeo,Tonale,false
+Audi,A3,false
+Audi,A4 Allroad,false
+Audi,A4,false
+Audi,A5 Cabriolet,true
+Audi,A5 Sportback,false
+Audi,A5,false
+Audi,A6 Allroad,false
+Audi,A6 Avant e-tron,false
+Audi,A6 Sportback e-tron,false
+Audi,A6,false
+Audi,A7,false
+Audi,A8,false
+Audi,e-tron GT,false
+Audi,Q3,false
+Audi,Q4 e-tron,false
+Audi,Q4 Sportback e-tron,false
+Audi,Q5 Sportback,false
+Audi,Q5,false
+Audi,Q6 e-tron,false
+Audi,Q7,false
+Audi,Q8 e-tron,false
+Audi,Q8 Sportback e-tron,false
+Audi,Q8,false
+Audi,R8,true
+Audi,RS 3,false
+Audi,RS 5,false
+Audi,RS 6 Avant,false
+Audi,RS 7,false
+Audi,RS e-tron GT,false
+Audi,RS Q8,false
+Audi,S3,false
+Audi,S5,false
+Audi,S6,false
+Audi,S7,false
+Audi,S8,false
+Audi,SQ5,false
+Audi,SQ7,false
+Audi,SQ8 e-tron,false
+Audi,SQ8 Sportback e-tron,false
+Audi,SQ8,false
+Audi,TT RS,true
+Audi,TT,true
+Audi,TTS,true
+BMW,2 Series,false
+BMW,3 Series,false
+BMW,4 Series,false
+BMW,5 Series,false
+BMW,7 Series,false
+BMW,8 Series,false
+BMW,840i,false
+BMW,Alpina B8,false
+BMW,Alpina XB7,false
+BMW,i4,false
+BMW,i5,false
+BMW,i7,false
+BMW,iX,false
+BMW,M2,false
+BMW,M240i,false
+BMW,M3,false
+BMW,M340i,false
+BMW,M4,false
+BMW,M440i,false
+BMW,M5,false
+BMW,M550e,false
+BMW,M760e,false
+BMW,M8,false
+BMW,M850i,false
+BMW,X1,false
+BMW,X2,false
+BMW,X3 M,false
+BMW,X3,false
+BMW,X4,false
+BMW,X5 M,false
+BMW,X5,false
+BMW,X6 M,false
+BMW,X6,false
+BMW,X7,false
+BMW,XM,false
+BMW,Z4,false
+brand,model,discontinued
+Buick,Enclave
+Buick,Encore GX
+Buick,Envision
+Buick,Envista
+Cadillac,CT4
+Cadillac,CT5
+Cadillac,Escalade
+Cadillac,Escalade IQ
+Cadillac,Lyriq
+Cadillac,Optiq
+Cadillac,Vistiq
+Cadillac,XT4
+Cadillac,XT5
+Cadillac,XT6
+Chevrolet,Blazer
+Chevrolet,Blazer EV
+Chevrolet,Colorado
+Chevrolet,Corvette
+Chevrolet,Equinox
+Chevrolet,Equinox EV
+Chevrolet,Silverado 1500
+Chevrolet,Silverado EV
+Chevrolet,Suburban
+Chevrolet,Tahoe
+Chevrolet,Trailblazer
+Chevrolet,Traverse
+Chevrolet,Trax
+Chrysler,Pacifica
+Chrysler,Pacifica Hybrid
+Chrysler,Voyager
+Dodge,Charger Daytona
+Dodge,Durango
+Dodge,Hornet
+Dodge,Hornet Plug-In Hybrid
+Fiat,500e
+Ford,Bronco
+Ford,Bronco Sport
+Ford,Escape
+Ford,Escape Hybrid
+Ford,Escape Plug-In Hybrid
+Ford,Expedition
+Ford,Explorer
+Ford,F-150
+Ford,F-150 Lightning
+Ford,Maverick
+Ford,Mustang
+Ford,Mustang Mach-E
+Ford,Ranger
+Genesis,Electrified G80
+Genesis,Electrified GV70
+Genesis,G70
+Genesis,G80
+Genesis,G90
+Genesis,GV60
+Genesis,GV70
+Genesis,GV80
+GMC,Acadia
+GMC,Canyon
+GMC,Hummer EV Pickup
+GMC,Hummer EV SUV
+GMC,Sierra 1500
+GMC,Sierra EV
+GMC,Terrain
+GMC,Yukon
+Honda,Accord
+Honda,Accord Hybrid
+Honda,Civic
+Honda,Civic Hatchback,false
+Honda,Civic Hybrid
+Honda,Civic Hybrid Hatchback,false
+Honda,Civic Type R
+Honda,Clarity,true
+Honda,CR-V
+Honda,CR-V e:FCEV,false
+Honda,CR-V Hybrid
+Honda,CR-Z,true
+Honda,Crosstour,true
+Honda,e,true
+Honda,Element,true
+Honda,Fit,true
+Honda,HR-V
+Honda,HR-V Sport EV,false
+Honda,Insight,true
+Honda,Odyssey
+Honda,Passport
+Honda,Passport TrailSport,false
+Honda,Pilot
+Honda,Prelude,false
+Honda,Prologue
+Honda,Ridgeline
+Honda,S2000,true
+Hyundai,Accent,true
+Hyundai,Azera,true
+Hyundai,Elantra
+Hyundai,Elantra Hybrid
+Hyundai,Elantra N
+Hyundai,Entourage,true
+Hyundai,Excel,true
+Hyundai,Genesis Coupe,true
+Hyundai,Ioniq 5
+Hyundai,Ioniq 6
+Hyundai,Ioniq 9
+Hyundai,Ioniq Hybrid,true
+Hyundai,Ioniq Plug-In Hybrid,true
+Hyundai,Ioniq,true
+Hyundai,Kona
+Hyundai,Kona Electric
+Hyundai,Nexo,false
+Hyundai,Palisade
+Hyundai,Palisade Hybrid
+Hyundai,Santa Cruz
+Hyundai,Santa Fe
+Hyundai,Santa Fe Hybrid
+Hyundai,Sonata
+Hyundai,Sonata Hybrid
+Hyundai,Tiburon,true
+Hyundai,Tucson
+Hyundai,Tucson Hybrid
+Hyundai,Tucson Plug-In Hybrid
+Hyundai,Veloster N,true
+Hyundai,Veloster,true
+Hyundai,Venue
+Hyundai,Venue N,false
+Hyundai,Veracruz,true
+Hyundai,XG350,true
+Ineos,Fusilier,false
+Ineos,Grenadier Quartermaster
+Ineos,Grenadier Station Wagon
+Infiniti,EX35,true
+Infiniti,FX35,true
+Infiniti,G35,true
+Infiniti,G37,true
+Infiniti,Q45,true
+Infiniti,Q50
+Infiniti,Q60,true
+Infiniti,Q70,true
+Infiniti,QX30,true
+Infiniti,QX50
+Infiniti,QX55
+Infiniti,QX56,true
+Infiniti,QX60
+Infiniti,QX70,true
+Infiniti,QX80
+Jaguar,E-Pace
+Jaguar,F-Pace
+Jaguar,F-Type,true
+Jaguar,I-Pace
+Jaguar,S-Type,true
+Jaguar,X-Type,true
+Jaguar,XE,true
+Jaguar,XF,true
+Jaguar,XJ,true
+Jaguar,XJS,true
+Jaguar,XK,true
+Jeep,Cherokee,false
+Jeep,CJ,true
+Jeep,Comanche,true
+Jeep,Commander L,false
+Jeep,Commander,true
+Jeep,Compass
+Jeep,Gladiator
+Jeep,Grand Cherokee
+Jeep,Grand Cherokee 4xe
+Jeep,Grand Cherokee L
+Jeep,Grand Wagoneer
+Jeep,Liberty,true
+Jeep,Patriot,true
+Jeep,Recon,false
+Jeep,Renegade,true
+Jeep,Wagoneer
+Jeep,Wrangler
+Jeep,Wrangler 4xe
+Kia,Amanti,true
+Kia,Borrego,true
+Kia,Cadenza,true
+Kia,Carnival
+Kia,Carnival Hybrid
+Kia,Carnival,false
+Kia,EV3
+Kia,EV4
+Kia,EV5,false
+Kia,EV6
+Kia,EV9
+Kia,Forte,true
+Kia,K4
+Kia,K5
+Kia,Niro
+Kia,Niro EV
+Kia,Niro Plug-In Hybrid
+Kia,Optima,true
+Kia,Rio,true
+Kia,Rondo,true
+Kia,Sedona,true
+Kia,Seltos
+Kia,Sephia,true
+Kia,Sorento
+Kia,Sorento Hybrid
+Kia,Sorento Plug-In Hybrid
+Kia,Soul
+Kia,Sportage
+Kia,Sportage Hybrid
+Kia,Sportage Plug-In Hybrid
+Kia,Stinger,true
+Kia,Telluride
+Land Rover,Defender
+Land Rover,Discovery
+Land Rover,Discovery Sport
+Land Rover,Freelander,true
+Land Rover,LR2,true
+Land Rover,LR3,true
+Land Rover,LR4,true
+Land Rover,Range Rover
+Land Rover,Range Rover Classic,true
+Land Rover,Range Rover Electric,false
+Land Rover,Range Rover Evoque
+Land Rover,Range Rover Sport
+Land Rover,Range Rover SV,false
+Land Rover,Range Rover Velar
+Lexus,CT,true
+Lexus,ES
+Lexus,ES Electric
+Lexus,ES Hybrid
+Lexus,GS,true
+Lexus,GX
+Lexus,HS,true
+Lexus,IS
+Lexus,LC
+Lexus,LFA,true
+Lexus,LS
+Lexus,LX
+Lexus,NX
+Lexus,NX 450h+,false
+Lexus,NX Hybrid
+Lexus,NX Plug-In Hybrid
+Lexus,RC
+Lexus,RX
+Lexus,RX Hybrid
+Lexus,RX L,true
+Lexus,RX Plug-In Hybrid
+Lexus,RZ
+Lexus,RZ 550e,false
+Lexus,SC,true
+Lexus,TX
+Lexus,TX Hybrid
+Lexus,TX Plug-In Hybrid
+Lexus,UX Hybrid
+Lexus,UX,false
+Lincoln,Aviator
+Lincoln,Blackwood,true
+Lincoln,Continental,true
+Lincoln,Corsair
+Lincoln,Mark LT,true
+Lincoln,MKC,true
+Lincoln,MKS,true
+Lincoln,MKT,true
+Lincoln,MKZ,true
+Lincoln,Nautilus
+Lincoln,Navigator
+Lincoln,Star,false
+Lincoln,Town Car,true
+Lucid,Air
+Lucid,Gravity
+Lucid,Sapphire,false
+Maserati,GranTurismo
+Maserati,Grecale
+Maserati,Grecale Folgore
+Maserati,Levante
+Maserati,Quattroporte
+Mazda,CX-30
+Mazda,CX-5
+Mazda,CX-50
+Mazda,CX-50 Hybrid&nbsp;
+Mazda,CX-70
+Mazda,CX-70 PHEV
+Mazda,CX-90
+Mazda,CX-90 PHEV
+Mazda,Mazda3
+Mazda,MX-5 Miata
+Mercedes-Benz,C-Class
+Mercedes-Benz,CLA Class
+Mercedes-Benz,CLE Class
+Mercedes-Benz,E-Class
+Mercedes-Benz,EQB
+Mercedes-Benz,EQE Sedan
+Mercedes-Benz,EQE SUV
+Mercedes-Benz,EQS Sedan
+Mercedes-Benz,EQS SUV
+Mercedes-Benz,G 63
+Mercedes-Benz,G-Class
+Mercedes-Benz,G-Class EV
+Mercedes-Benz,GLA Class
+Mercedes-Benz,GLB Class
+Mercedes-Benz,GLC Class
+Mercedes-Benz,GLC Plug-In Hybrid
+Mercedes-Benz,GLE 53
+Mercedes-Benz,GLE Class
+Mercedes-Benz,GLE Plug-In Hybrid
+Mercedes-Benz,GLS Class
+Mercedes-Benz,GT
+Mercedes-Benz,S-Class
+Mercedes-Benz,SL Class
+Mini,Cooper
+Mini,Countryman
+Mini,Countryman EV
+Mini,Electric Hardtop
+Mitsubishi,Eclipse Cross
+Mitsubishi,Outlander
+Mitsubishi,Outlander Plug-In Hybrid
+Mitsubishi,Outlander Sport
+Nissan,Altima
+Nissan,Ariya
+Nissan,Armada
+Nissan,Frontier
+Nissan,GT-R
+Nissan,Kicks
+Nissan,Leaf
+Nissan,Murano
+Nissan,Pathfinder
+Nissan,Rogue
+Nissan,Sentra
+Nissan,Versa
+Nissan,Z
+Polestar,2
+Polestar,3
+Polestar,4
+Porsche,911
+Porsche,Boxster
+Porsche,Cayenne
+Porsche,Cayenne Hybrid
+Porsche,Cayman
+Porsche,Macan
+Porsche,Macan EV
+Porsche,Panamera
+Porsche,Taycan
+Ram,1500
+Rivian,R1S
+Rivian,R1T
+Subaru,Ascent
+Subaru,Ascent,false
+Subaru,BRZ
+Subaru,BRZ,false
+Subaru,Crosstrek
+Subaru,Crosstrek Hybrid
+Subaru,Crosstrek Hybrid,false
+Subaru,Crosstrek,false
+Subaru,Forester
+Subaru,Forester Hybrid
+Subaru,Forester Hybrid,false
+Subaru,Forester,false
+Subaru,Impreza
+Subaru,Impreza,false
+Subaru,Legacy
+Subaru,Legacy,true
+Subaru,Outback
+Subaru,Outback,false
+Subaru,Solterra
+Subaru,Solterra,false
+Subaru,Trailseeker
+Subaru,Trailseeker,false
+Subaru,Uncharted,false
+Subaru,WRX
+Subaru,WRX,false
+Tesla,Cybercab,false
+Tesla,Cybertruck
+Tesla,Cybertruck,false
+Tesla,Model 3
+Tesla,Model 3,false
+Tesla,Model S
+Tesla,Model S,false
+Tesla,Model X
+Tesla,Model X,false
+Tesla,Model Y
+Tesla,Model Y,false
+Tesla,Semi,false
+Toyota,4Runner
+Toyota,4Runner,false
+Toyota,Avalon,true
+Toyota,bZ Woodland
+Toyota,bZ Woodland,false
+Toyota,bZ,false
+Toyota,C-HR,false
+Toyota,Camry
+Toyota,Camry Hybrid,false
+Toyota,Camry,false
+Toyota,Corolla
+Toyota,Corolla Cross
+Toyota,Corolla Cross Hybrid
+Toyota,Corolla Cross Hybrid,false
+Toyota,Corolla Cross,false
+Toyota,Corolla Hatchback,false
+Toyota,Corolla Hybrid
+Toyota,Corolla Hybrid,false
+Toyota,Corolla,false
+Toyota,Crown
+Toyota,Crown Signia
+Toyota,Crown Signia,false
+Toyota,Crown,false
+Toyota,GR Corolla
+Toyota,GR Corolla,false
+Toyota,GR86
+Toyota,GR86,false
+Toyota,Grand Highlander
+Toyota,Grand Highlander Hybrid
+Toyota,Grand Highlander Hybrid,false
+Toyota,Grand Highlander,false
+Toyota,Highlander
+Toyota,Highlander Hybrid
+Toyota,Highlander Hybrid,false
+Toyota,Highlander,false
+Toyota,Land Cruiser
+Toyota,Land Cruiser,false
+Toyota,Mirai,false
+Toyota,Prius
+Toyota,Prius Plug-In Hybrid
+Toyota,Prius Plug-In Hybrid,false
+Toyota,Prius,false
+Toyota,RAV4
+Toyota,RAV4 Hybrid
+Toyota,RAV4 Hybrid,false
+Toyota,RAV4 Plug-In Hybrid
+Toyota,RAV4 Plug-In Hybrid,false
+Toyota,RAV4,false
+Toyota,Sequoia
+Toyota,Sequoia,false
+Toyota,Sienna
+Toyota,Sienna,false
+Toyota,Supra
+Toyota,Supra,false
+Toyota,Tacoma
+Toyota,Tacoma,false
+Toyota,Tundra
+Toyota,Tundra,false
+Toyota,Venza,true
+Volkswagen,Arteon,true
+Volkswagen,Atlas
+Volkswagen,Atlas Cross Sport
+Volkswagen,Atlas Cross Sport,false
+Volkswagen,Atlas,false
+Volkswagen,Golf R
+Volkswagen,Golf R,false
+Volkswagen,GTI
+Volkswagen,GTI,false
+Volkswagen,ID. Buzz
+Volkswagen,ID. Buzz,false
+Volkswagen,ID.4
+Volkswagen,ID.4,false
+Volkswagen,ID.7,true
+Volkswagen,Jetta
+Volkswagen,Jetta GLI,false
+Volkswagen,Jetta,false
+Volkswagen,Passat,true
+Volkswagen,Taos
+Volkswagen,Taos,false
+Volkswagen,Tiguan
+Volkswagen,Tiguan,false
+Volvo,EC40,false
+Volvo,EC40,true
+Volvo,ES90,false
+Volvo,EX30
+Volvo,EX30 Cross Country,true
+Volvo,EX30,true
+Volvo,EX40
+Volvo,EX40,false
+Volvo,EX60,false
+Volvo,EX90
+Volvo,EX90,false
+Volvo,S60
+Volvo,S60 Plug-In Hybrid
+Volvo,S60 Plug-In Hybrid,true
+Volvo,S60,true
+Volvo,S90
+Volvo,S90 Plug-In Hybrid
+Volvo,S90 Plug-In Hybrid,true
+Volvo,S90,true
+Volvo,V60
+Volvo,V60 Cross Country,false
+Volvo,V60 Cross Country,true
+Volvo,V60,true
+Volvo,V90
+Volvo,V90 Cross Country,false
+Volvo,V90 Cross Country,true
+Volvo,V90,true
+Volvo,XC40
+Volvo,XC40,false
+Volvo,XC60
+Volvo,XC60 Plug-in Hybrid
+Volvo,XC60 Plug-in Hybrid,false
+Volvo,XC60,false
+Volvo,XC90
+Volvo,XC90 Plug-In Hybrid
+Volvo,XC90 Plug-In Hybrid,false
+Volvo,XC90,false

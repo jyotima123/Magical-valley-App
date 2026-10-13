@@ -1,0 +1,167 @@
+name: mvc_app
+description: "A new Flutter project."
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# Both the version and the builder number may be overridden in flutter
+# build by specifying --build-name and --build-number, respectively.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number is used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+# In Windows, build-name is used as the major, minor, and patch parts
+# of the product and file versions while build-number is used as the build suffix.
+version: 1.7.2+130
+
+environment:
+  sdk: ^3.9.0-28.0.dev
+
+# Dependencies specify other packages that your package needs in order to work.
+# To automatically upgrade your package dependencies to the latest versions
+# consider running `flutter pub upgrade --major-versions`. Alternatively,
+# dependencies can be manually updated by changing the version numbers below to
+# the latest version available on pub.dev. To see which dependencies have newer
+# versions available, run `flutter pub outdated`.
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.8
+  flutter_svg: ^2.1.0
+  flutter_bloc: ^9.1.1
+  equatable: ^2.0.7
+  supabase_flutter: ^2.9.1
+  flutter_dotenv: ^5.1.0
+  
+  # Better HTTP handling
+  dio: ^5.3.2
+  email_validator: ^3.0.0
+  introduction_screen: ^3.1.17
+  cached_network_image: ^3.4.1
+  # Imported directly to configure the vehicle photo disk cache.
+  flutter_cache_manager: ^3.4.1
+  shared_preferences: ^2.5.3
+  image_picker: ^1.1.2
+#  image_cropper: ^5.0.1
+  flutter_image_compress: ^2.0.4
+  mime: ^1.0.4
+  path: ^1.8.3
+  file_picker: ^10.2.0
+  app_links: ^6.4.0
+  awesome_dialog: ^3.2.1
+
+  test: ^1.24.0
+  mockito: ^5.4.0
+  build_runner: ^2.4.0
+  flutter_pdfview: ^1.4.3
+  url_launcher: ^6.3.2
+  flutter_launcher_icons: ^0.14.4
+  sign_in_with_apple: ^7.0.1
+  crypto: ^3.0.6
+  package_info_plus: ^8.3.0
+  image: ^4.5.4
+  upgrader: ^11.5.0
+  clipboad_image: ^0.0.1+1
+  
+  # Firebase messaging
+  firebase_core: any
+  firebase_messaging: ^15.2.10
+  firebase_crashlytics: any
+  flutter_local_notifications: any
+  app_badge_plus: ^1.2.3
+  amplitude_flutter: ^4.3.10
+  
+  # # Local storage/caching
+  # shared_preferences: ^2.2.2
+  
+  # # Secure storage of sensitive data
+  # flutter_secure_storage: ^9.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # MockClient, used to drive Supabase-backed screens in widget tests.
+  http: ^1.4.0
+# Remember to comment this out when building production version on Xcode
+  integration_test:
+    sdk: flutter
+
+  # The "flutter_lints" package below contains a set of recommended lints to
+  # encourage good coding practices. The lint set provided by the package is
+  # activated in the `analysis_options.yaml` file located at the root of your
+  # package. See that file for information about deactivating specific lint
+  # rules and activating additional ones.
+  flutter_lints: ^5.0.0
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter packages.
+flutter:
+  uses-material-design: true
+  assets:
+    - .env_qa
+    - .env_prod
+    - assets/
+    - assets/car_logos/
+    - assets/market_categories/
+    - assets/MainScreenLogo.png
+    - assets/social_icons/google_logo.svg
+    - assets/social_icons/apple_logo.svg
+    - assets/social_icons/facebook_logo.svg
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins/Poppins-Thin.ttf
+          weight: 100
+        - asset: assets/fonts/Poppins/Poppins-ThinItalic.ttf
+          weight: 100
+          style: italic
+        - asset: assets/fonts/Poppins/Poppins-ExtraLight.ttf
+          weight: 200
+        - asset: assets/fonts/Poppins/Poppins-ExtraLightItalic.ttf
+          weight: 200
+          style: italic
+        - asset: assets/fonts/Poppins/Poppins-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Poppins/Poppins-LightItalic.ttf
+          weight: 300
+          style: italic
+        - asset: assets/fonts/Poppins/Poppins-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Poppins/Poppins-Italic.ttf
+          weight: 400
+          style: italic
+        - asset: assets/fonts/Poppins/Poppins-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Poppins/Poppins-MediumItalic.ttf
+          weight: 500
+          style: italic
+        - asset: assets/fonts/Poppins/Poppins-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Poppins/Poppins-SemiBoldItalic.ttf
+          weight: 600
+          style: italic
+        - asset: assets/fonts/Poppins/Poppins-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Poppins/Poppins-BoldItalic.ttf
+          weight: 700
+          style: italic
+        - asset: assets/fonts/Poppins/Poppins-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/Poppins/Poppins-ExtraBoldItalic.ttf
+          weight: 800
+          style: italic
+        - asset: assets/fonts/Poppins/Poppins-Black.ttf
+          weight: 900
+        - asset: assets/fonts/Poppins/Poppins-BlackItalic.ttf
+          weight: 900
+          style: italic
