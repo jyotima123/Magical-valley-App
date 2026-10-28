@@ -5116,10 +5116,15 @@ apiService.streamPostReactions('post-id').listen((reactions) {
     int? offset,
   }) async {
     try {
+      // The sender's profile embeds without !inner on purpose: an embedded
+      // inner join drops any message whose sender profile the reader cannot
+      // see, and user_profiles' RLS is narrow (053/062/087). A message is the
+      // point of this query; the name on it is decoration, and the chat bubble
+      // only uses sender_id anyway.
       var query = _client
           .from('vehicle_inquiry_messages')
           .select(
-            '*, user_profiles!inner(id, username, full_name, email, profile_picture_url, created_at, updated_at)',
+            '*, user_profiles(id, username, full_name, email, profile_picture_url, created_at, updated_at)',
           )
           .eq('conversation_id', conversationId)
           .order('created_at', ascending: false);

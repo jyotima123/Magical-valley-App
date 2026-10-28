@@ -5,16 +5,16 @@ A powerful Flutter-based community platform that connects organizations with the
 ## 📋 Latest Release
 
 <!-- LATEST_RELEASE_START -->
-# 1.7.1
+# 1.7.2
 
-- Feature: vehicle detail screen now shows the seller at the far right of the Stock # row — the dealership name for feed inventory, or the name of the person who posted it for a community listing
-- Feature: sellers can delete their own listing from the app — a Delete icon next to Edit on the vehicle detail screen, and a Delete item in each vehicle's menu on My Listings
-- Feature: a sold community listing now clears itself from the shared Cars list 24h after the sale, instead of sitting there indefinitely; the seller's own copy still shows in My Listings regardless
-- Feature: "Mark as Sold" moved out of the vehicle detail app-bar menu into the main action row, in the slot a buyer's Call button occupies — owners see Mark as Sold + View Messages, buyers see Call + Message Seller
-- Feature: the Cars list now puts a seller's own listings first, ahead of everyone else's, whatever sort is selected
+- Feature: new "Seller" filter on the Cars filter sheet — Dealer or Private Seller (either or both); with neither selected, everything shows
+- Feature: vehicle detail now shows the dealership's own name for feed inventory (e.g. the LiftKit dealer) instead of the integration label "LiftKit"
+- Feature: the Cars list now shows vehicles without pictures after the ones that have pictures, whatever sort is selected
+- Change: revamped the Magic Market initial screen
+- Change: Market's "My Listings" moved from a left-hand drawer into a menu at the top right, next to the Add button
 <!-- LATEST_RELEASE_END -->
 
-Most recent Android build: <!-- ANDROID_VERSION_START -->1.7.1<!-- ANDROID_VERSION_END --> | Most recent iOS build: <!-- IOS_VERSION_START -->1.6.12<!-- IOS_VERSION_END -->
+Most recent Android build: <!-- ANDROID_VERSION_START -->1.7.2<!-- ANDROID_VERSION_END --> | Most recent iOS build: <!-- IOS_VERSION_START -->1.6.12<!-- IOS_VERSION_END -->
 
 ## ✨ Features
 
