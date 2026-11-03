@@ -766,13 +766,27 @@ class ChatService {
   ) async {
     try {
       // Count channels with unread messages based on device-local read status
-      // This ensures unread counts persist across logins on the same device
+      // This ensures unread counts persist across logins on the same device.
+      // Only channels the user actually follows should count toward the
+      // badge — an org the user never followed was never "read" either, so
+      // without this filter every unfollowed org in the platform would
+      // inflate the count.
       final unreadCount = channels
-          .where((channel) => channel.hasUnreadMessages)
+          .where((channel) => channel.isFollowed && channel.hasUnreadMessages)
           .length;
 
       final fcmService = FCMService.instance;
       await fcmService.updateNotificationBadge(count: unreadCount);
+
+      // Android has no standalone "set the badge number" API the way iOS
+      // does — the OS only shows a badge when there's a live notification
+      // to attach it to. This keeps a silent summary notification in sync
+      // with the unread count so the Android badge actually renders, and
+      // clears it at 0. No-op on iOS, which already works via the call
+      // above. Kept as a safety net alongside the now-working real push
+      // pipeline, since some sends still fail (stale/expired FCM tokens).
+      await fcmService.syncAndroidBadgeNotification(unreadCount);
+
       AmplitudeService.instance.logEvent('badge_updated', eventProperties: {
         'count': unreadCount,
         'total_channels': channels.length,

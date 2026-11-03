@@ -256,6 +256,17 @@ class _QAUnreadMessagesDebugScreenState
             final readChannels = channels
                 .where((c) => !c.hasUnreadMessages)
                 .toList();
+            // The detail list sections below should only ever show channels
+            // the user actually follows — an unfollowed org was never
+            // "read" either, so it would otherwise always land in the
+            // Unread list and inflate it. The summary cards above already
+            // filter by isFollowed where it matters, so they're unaffected.
+            final followedUnreadChannels = unreadChannels
+                .where((c) => c.isFollowed)
+                .toList();
+            final followedReadChannels = readChannels
+                .where((c) => c.isFollowed)
+                .toList();
 
             // Calculate total unread messages count
             // final totalUnreadCount = channels.fold<int>(
@@ -316,21 +327,27 @@ class _QAUnreadMessagesDebugScreenState
                     ),
                     const SizedBox(height: 24),
 
-                    // Unread Channels Section
-                    if (unreadChannels.isNotEmpty) ...[
-                      _buildSectionHeader('Unread Channels', Colors.red),
+                    // Unread Channels Section (followed channels only)
+                    if (followedUnreadChannels.isNotEmpty) ...[
+                      _buildSectionHeader(
+                        'Unread Channels (Followed)',
+                        Colors.red,
+                      ),
                       const SizedBox(height: 12),
-                      ...unreadChannels.map(
+                      ...followedUnreadChannels.map(
                         (channel) => _buildChannelCard(channel, true),
                       ),
                       const SizedBox(height: 24),
                     ],
 
-                    // Read Channels Section
-                    if (readChannels.isNotEmpty) ...[
-                      _buildSectionHeader('Read Channels', Colors.green),
+                    // Read Channels Section (followed channels only)
+                    if (followedReadChannels.isNotEmpty) ...[
+                      _buildSectionHeader(
+                        'Read Channels (Followed)',
+                        Colors.green,
+                      ),
                       const SizedBox(height: 12),
-                      ...readChannels.map(
+                      ...followedReadChannels.map(
                         (channel) => _buildChannelCard(channel, false),
                       ),
                     ],

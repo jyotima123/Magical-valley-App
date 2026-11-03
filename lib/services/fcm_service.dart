@@ -243,6 +243,62 @@ class FCMService {
     }
   }
 
+  // Android-only: AppBadgePlus.updateBadge() sets a number, but on modern
+  // Android that number only ever renders on the launcher icon when the OS
+  // also has a live notification to attach it to — there's no standalone
+  // "just set the badge" API like there is on iOS. iOS already gets its
+  // badge from the AppBadgePlus call in updateNotificationBadge() above and
+  // needs nothing else, so this is gated to Android only and never touches
+  // the iOS path.
+  //
+  // To give Android something to attach the badge to, we keep a single
+  // low-priority, silent "summary" notification in sync with the unread
+  // count: update it (same fixed id, so it replaces itself instead of
+  // stacking) when count > 0, and cancel it entirely once count hits 0 so
+  // the badge clears along with it. onlyAlertOnce means it won't re-alert
+  // or re-pop every time the count changes, just quietly update its text.
+  static const int _unreadSummaryNotificationId = 778899;
+
+  Future<void> syncAndroidBadgeNotification(int count) async {
+    if (!Platform.isAndroid) return;
+
+    try {
+      if (count <= 0) {
+        await _localNotifications.cancel(_unreadSummaryNotificationId);
+        _logger.info('🟢 Android unread summary notification cleared');
+        return;
+      }
+
+      final androidDetails = AndroidNotificationDetails(
+        'unread_badge_sync',
+        'Unread messages',
+        channelDescription:
+            'Keeps the app icon badge in sync with your unread channels',
+        importance: Importance.low,
+        priority: Priority.low,
+        playSound: false,
+        enableVibration: false,
+        showWhen: false,
+        onlyAlertOnce: true,
+        icon: '@mipmap/ic_launcher',
+      );
+
+      final details = NotificationDetails(android: androidDetails);
+
+      await _localNotifications.show(
+        _unreadSummaryNotificationId,
+        'Unread messages',
+        count == 1
+            ? '1 unread message in your channels'
+            : '$count unread messages in your channels',
+        details,
+      );
+      _logger.info('🟢 Android unread summary notification synced to $count');
+    } catch (e) {
+      _logger.warning('Failed to sync Android unread summary notification: $e');
+    }
+  }
+
   // Show local notification
   Future<void> _showLocalNotification(RemoteMessage message) async {
     final notification = message.notification;
@@ -335,9 +391,16 @@ class FCMService {
   Future<void> updateNotificationBadge({int? count}) async {
     try {
       final badgeCount = count ?? 0;
+
+      // DIAGNOSTIC: does this device/launcher report badge support at all?
+      final isSupported = await AppBadgePlus.isSupported();
+      _logger.info('🔴🔴🔴 AppBadgePlus.isSupported() = $isSupported');
+      print('🔴🔴🔴 AppBadgePlus.isSupported() = $isSupported');
+
       // Ensure we await the badge update, especially important on iOS
       await AppBadgePlus.updateBadge(badgeCount);
-      
+      print('🔴🔴🔴 AppBadgePlus.updateBadge($badgeCount) completed without throwing');
+
       if (badgeCount == 0) {
         _logger.info('iOS notification badge cleared');
       } else {
