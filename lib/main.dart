@@ -487,6 +487,11 @@ class _AppRouterState extends State<AppRouter>
       final fcmService = context.read<FCMService>();
 
       await prefsService.initialize();
+      // Pull down any channels the user explicitly muted (from another
+      // device, or a previous install) before FCM starts delivering
+      // messages, so a fresh local cache doesn't miss real opt-outs.
+      // Channels with no explicit preference stay enabled by default.
+      await prefsService.syncFromSupabase();
       await fcmService.initialize(
         apiRepository: apiRepository,
         prefsService: prefsService,

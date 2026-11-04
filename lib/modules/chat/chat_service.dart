@@ -5,6 +5,7 @@ import 'package:mvc_app/modules/chat/models/chat_channel.dart';
 import 'package:mvc_app/modules/chat/models/chat_message.dart';
 import 'package:mvc_app/modules/chat/models/organization_model.dart';
 import 'package:mvc_app/modules/chat/models/post_reactions_model.dart';
+import 'package:mvc_app/modules/chat/mvc_organization.dart';
 import 'package:mvc_app/services/api_repository.dart';
 import 'package:mvc_app/services/api/api_service_factory.dart';
 import 'package:mvc_app/services/read_status_service.dart';
@@ -74,9 +75,14 @@ class ChatService {
   /// This should be called whenever channels are loaded or unread status changes
   Future<void> _updateNotificationBadge(List<ChatChannel> channels) async {
     try {
-      // Count channels with unread messages
+      // Count channels with unread messages. Only channels the user
+      // actually follows (plus the always-shown MVC official channel)
+      // should count toward the badge — see the matching comment on
+      // updateNotificationBadgeFromChannels below for why.
       final unreadCount = channels
-          .where((channel) => channel.hasUnreadMessages)
+          .where((channel) =>
+              isFollowedOrMvcChannel(channel.organizationId, channel.isFollowed) &&
+              channel.hasUnreadMessages)
           .length;
 
       final fcmService = FCMService.instance;
@@ -770,9 +776,14 @@ class ChatService {
       // Only channels the user actually follows should count toward the
       // badge — an org the user never followed was never "read" either, so
       // without this filter every unfollowed org in the platform would
-      // inflate the count.
+      // inflate the count. The MVC official channel is the one exception:
+      // it's always shown in the chat list regardless of follow state (see
+      // ChatState._applyFilters), so it should also always be eligible to
+      // count toward the badge, consistent with what the user actually sees.
       final unreadCount = channels
-          .where((channel) => channel.isFollowed && channel.hasUnreadMessages)
+          .where((channel) =>
+              isFollowedOrMvcChannel(channel.organizationId, channel.isFollowed) &&
+              channel.hasUnreadMessages)
           .length;
 
       final fcmService = FCMService.instance;

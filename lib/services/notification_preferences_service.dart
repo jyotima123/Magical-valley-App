@@ -16,7 +16,22 @@ class NotificationPreferencesService {
   final SupabaseClient _supabase = Supabase.instance.client;
 
   // Keys for SharedPreferences
-  static const String _channelNotificationsKey = 'channel_notifications';
+  //
+  // NOTE: this stores the set of channels the user has EXPLICITLY turned
+  // notifications OFF for (an opt-out/deny-list), not an opt-in allow-list.
+  // Any channel id that has never been touched is treated as enabled by
+  // default. This matches the server-side default used by the
+  // send-fcm-notification Edge Function (`prefMap.get(...) ?? true`) and
+  // the notification toggle UI, which also starts each switch in the "on"
+  // position until it learns otherwise.
+  //
+  // This used to be stored as an "enabled channels" allow-list under the
+  // key 'channel_notifications', which meant any channel without an
+  // explicit entry (e.g. every channel on a fresh install, or after
+  // android:allowBackup was disabled) was silently treated as disabled.
+  // That key is intentionally abandoned rather than reinterpreted, so old
+  // data can't be misread with the opposite meaning.
+  static const String _disabledChannelsKey = 'disabled_channel_notifications';
   static const String _globalNotificationsKey = 'global_notifications_enabled';
 
   // Initialize the service
@@ -31,23 +46,31 @@ class NotificationPreferencesService {
     }
   }
 
-  // Get enabled channel IDs
-  Future<Set<String>> getEnabledChannelIds() async {
+  // Get the set of channel IDs the user has explicitly disabled notifications for
+  Future<Set<String>> getDisabledChannelIds() async {
     try {
       if (_prefs == null) await initialize();
 
-      final jsonString = _prefs!.getString(_channelNotificationsKey);
+      final jsonString = _prefs!.getString(_disabledChannelsKey);
       if (jsonString == null) return <String>{};
 
       final List<dynamic> channelList = jsonDecode(jsonString);
       return channelList.cast<String>().toSet();
     } catch (e) {
-      _logger.warning('Failed to get enabled channel IDs: $e');
+      _logger.warning('Failed to get disabled channel IDs: $e');
       return <String>{};
     }
   }
 
-  // Check if notifications are enabled for a specific channel
+  Future<void> _saveDisabledChannelIds(Set<String> channelIds) async {
+    if (_prefs == null) await initialize();
+    final jsonString = jsonEncode(channelIds.toList());
+    await _prefs!.setString(_disabledChannelsKey, jsonString);
+  }
+
+  // Check if notifications are enabled for a specific channel.
+  // Defaults to true (enabled) unless the user explicitly disabled it or
+  // global notifications are off.
   Future<bool> isChannelNotificationEnabled(String channelId) async {
     try {
       // First check if global notifications are enabled
@@ -55,24 +78,20 @@ class NotificationPreferencesService {
         return false;
       }
 
-      final enabledChannels = await getEnabledChannelIds();
-      return enabledChannels.contains(channelId);
+      final disabledChannels = await getDisabledChannelIds();
+      return !disabledChannels.contains(channelId);
     } catch (e) {
       _logger.warning('Failed to check channel notification status: $e');
-      return false;
+      return true; // Default to enabled, consistent with the rest of this model
     }
   }
 
   // Enable notifications for a channel
   Future<void> enableChannelNotification(String channelId) async {
     try {
-      if (_prefs == null) await initialize();
-
-      final enabledChannels = await getEnabledChannelIds();
-      enabledChannels.add(channelId);
-
-      final jsonString = jsonEncode(enabledChannels.toList());
-      await _prefs!.setString(_channelNotificationsKey, jsonString);
+      final disabledChannels = await getDisabledChannelIds();
+      disabledChannels.remove(channelId);
+      await _saveDisabledChannelIds(disabledChannels);
 
       _logger.info('Enabled notifications for channel: $channelId');
 
@@ -86,13 +105,9 @@ class NotificationPreferencesService {
   // Disable notifications for a channel
   Future<void> disableChannelNotification(String channelId) async {
     try {
-      if (_prefs == null) await initialize();
-
-      final enabledChannels = await getEnabledChannelIds();
-      enabledChannels.remove(channelId);
-
-      final jsonString = jsonEncode(enabledChannels.toList());
-      await _prefs!.setString(_channelNotificationsKey, jsonString);
+      final disabledChannels = await getDisabledChannelIds();
+      disabledChannels.add(channelId);
+      await _saveDisabledChannelIds(disabledChannels);
 
       _logger.info('Disabled notifications for channel: $channelId');
 
@@ -140,7 +155,7 @@ class NotificationPreferencesService {
   Future<void> clearAllPreferences() async {
     try {
       if (_prefs == null) await initialize();
-      await _prefs!.remove(_channelNotificationsKey);
+      await _prefs!.remove(_disabledChannelsKey);
       await _prefs!.remove(_globalNotificationsKey);
       _logger.info('Cleared all notification preferences');
     } catch (e) {
@@ -151,37 +166,34 @@ class NotificationPreferencesService {
   // Get all notification preferences as a map (useful for debugging or syncing)
   Future<Map<String, dynamic>> getAllPreferences() async {
     try {
-      final enabledChannels = await getEnabledChannelIds();
+      final disabledChannels = await getDisabledChannelIds();
       final globalEnabled = await isGlobalNotificationEnabled();
 
       return {
         'global_enabled': globalEnabled,
-        'enabled_channels': enabledChannels.toList(),
+        'disabled_channels': disabledChannels.toList(),
       };
     } catch (e) {
       _logger.warning('Failed to get all preferences: $e');
-      return {'global_enabled': true, 'enabled_channels': <String>[]};
+      return {'global_enabled': true, 'disabled_channels': <String>[]};
     }
   }
 
-  // Bulk enable/disable channels (useful for initial setup)
-  Future<void> setEnabledChannels(Set<String> channelIds) async {
+  // Bulk-set the explicitly-disabled channels (useful for syncing from Supabase)
+  Future<void> setDisabledChannels(Set<String> channelIds) async {
     try {
-      if (_prefs == null) await initialize();
-
-      final jsonString = jsonEncode(channelIds.toList());
-      await _prefs!.setString(_channelNotificationsKey, jsonString);
-
-      _logger.info('Set enabled channels: ${channelIds.length} channels');
+      await _saveDisabledChannelIds(channelIds);
+      _logger.info('Set disabled channels: ${channelIds.length} channels');
     } catch (e) {
-      _logger.severe('Failed to set enabled channels: $e');
+      _logger.severe('Failed to set disabled channels: $e');
     }
   }
 
-  // Check if any channels have notifications enabled
+  // Check if any channels have notifications enabled.
+  // Per-channel defaults to enabled now, so this is effectively whether
+  // global notifications are on.
   Future<bool> hasAnyChannelNotificationsEnabled() async {
-    final enabledChannels = await getEnabledChannelIds();
-    return enabledChannels.isNotEmpty && await isGlobalNotificationEnabled();
+    return await isGlobalNotificationEnabled();
   }
 
   // Get notification preferences for display in UI
@@ -261,9 +273,9 @@ class NotificationPreferencesService {
         return;
       }
 
-      final enabledChannels = await getEnabledChannelIds();
+      final disabledChannels = await getDisabledChannelIds();
 
-      // Get all channels the user follows to sync disabled ones too
+      // Get all channels the user follows to sync enabled ones too
       final allChannelsResponse = await _supabase
           .from('user_follows')
           .select('organization_id')
@@ -277,7 +289,7 @@ class NotificationPreferencesService {
       final preferencesToSync = <Map<String, dynamic>>[];
 
       for (final channelId in allChannelIds) {
-        final enabled = enabledChannels.contains(channelId);
+        final enabled = !disabledChannels.contains(channelId);
         preferencesToSync.add({
           'user_id': userId,
           'channel_id': channelId,
@@ -300,7 +312,10 @@ class NotificationPreferencesService {
   }
 
   /// Fetches all preferences from Supabase and updates local storage
-  /// (useful after login to sync across devices)
+  /// (useful after login to sync across devices/reinstalls). Only rows the
+  /// user explicitly set to disabled are carried over locally — a channel
+  /// with no row at all, or a row with notifications_enabled=true, is left
+  /// enabled by default, matching the server's own default.
   Future<void> syncFromSupabase() async {
     try {
       final userId = _supabase.auth.currentUser?.id;
@@ -314,21 +329,21 @@ class NotificationPreferencesService {
           .select('channel_id, notifications_enabled')
           .eq('user_id', userId);
 
-      final enabledChannels = <String>{};
+      final disabledChannels = <String>{};
 
       for (final row in response as List) {
         final channelId = row['channel_id'] as String;
         final enabled = row['notifications_enabled'] as bool;
 
-        if (enabled) {
-          enabledChannels.add(channelId);
+        if (!enabled) {
+          disabledChannels.add(channelId);
         }
       }
 
       // Update local storage
-      await setEnabledChannels(enabledChannels);
+      await setDisabledChannels(disabledChannels);
       _logger.info(
-        'Synced ${enabledChannels.length} preferences from Supabase',
+        'Synced ${disabledChannels.length} disabled channel preferences from Supabase',
       );
     } catch (e) {
       _logger.severe('Failed to sync from Supabase: $e');

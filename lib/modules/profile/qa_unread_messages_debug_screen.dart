@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mvc_app/app_theme.dart';
 import 'package:mvc_app/modules/chat/chat_bloc.dart';
 import 'package:mvc_app/modules/chat/models/chat_channel.dart';
+import 'package:mvc_app/modules/chat/mvc_organization.dart';
 import 'package:mvc_app/services/read_status_service.dart';
 import 'package:mvc_app/services/fcm_service.dart';
 import 'dart:io';
@@ -257,15 +258,17 @@ class _QAUnreadMessagesDebugScreenState
                 .where((c) => !c.hasUnreadMessages)
                 .toList();
             // The detail list sections below should only ever show channels
-            // the user actually follows — an unfollowed org was never
-            // "read" either, so it would otherwise always land in the
-            // Unread list and inflate it. The summary cards above already
-            // filter by isFollowed where it matters, so they're unaffected.
+            // the user actually follows, plus the MVC official channel
+            // (always shown in the real chat list regardless of follow
+            // state — see ChatState._applyFilters and
+            // ChatService.updateNotificationBadgeFromChannels). An
+            // unfollowed, non-MVC org was never "read" either, so it would
+            // otherwise always land in the Unread list and inflate it.
             final followedUnreadChannels = unreadChannels
-                .where((c) => c.isFollowed)
+                .where((c) => isFollowedOrMvcChannel(c.organizationId, c.isFollowed))
                 .toList();
             final followedReadChannels = readChannels
-                .where((c) => c.isFollowed)
+                .where((c) => isFollowedOrMvcChannel(c.organizationId, c.isFollowed))
                 .toList();
 
             // Calculate total unread messages count
@@ -274,10 +277,11 @@ class _QAUnreadMessagesDebugScreenState
             //   (sum, channel) => sum + channel.unreadCount,
             // );
 
-            final totalUnreadCount = unreadChannels
-                .where((c) => c.isFollowed)
-                .length
-                .toInt();
+            // Mirrors the real badge calculation in
+            // ChatService.updateNotificationBadgeFromChannels so this debug
+            // screen's "iOS Badge Count" preview matches what actually gets
+            // pushed to the OS.
+            final totalUnreadCount = followedUnreadChannels.length;
 
             return RefreshIndicator(
               onRefresh: () async {
@@ -310,27 +314,24 @@ class _QAUnreadMessagesDebugScreenState
                     ),
                     const SizedBox(height: 12),
                     _buildSummaryCard(
-                      'Unread and followed Channels',
-                      unreadChannels
-                          .where((c) => c.isFollowed)
-                          .length
-                          .toString(),
+                      'Unread, counts toward badge (Followed or MVC)',
+                      followedUnreadChannels.length.toString(),
                       Icons.mark_chat_unread,
                       Colors.red,
                     ),
                     const SizedBox(height: 12),
                     _buildSummaryCard(
-                      'Read and followed Channels',
-                      readChannels.where((c) => c.isFollowed).length.toString(),
+                      'Read (Followed or MVC)',
+                      followedReadChannels.length.toString(),
                       Icons.mark_chat_read,
                       Colors.green,
                     ),
                     const SizedBox(height: 24),
 
-                    // Unread Channels Section (followed channels only)
+                    // Unread Channels Section (followed channels, plus MVC)
                     if (followedUnreadChannels.isNotEmpty) ...[
                       _buildSectionHeader(
-                        'Unread Channels (Followed)',
+                        'Unread Channels (Followed or MVC)',
                         Colors.red,
                       ),
                       const SizedBox(height: 12),
@@ -340,10 +341,10 @@ class _QAUnreadMessagesDebugScreenState
                       const SizedBox(height: 24),
                     ],
 
-                    // Read Channels Section (followed channels only)
+                    // Read Channels Section (followed channels, plus MVC)
                     if (followedReadChannels.isNotEmpty) ...[
                       _buildSectionHeader(
-                        'Read Channels (Followed)',
+                        'Read Channels (Followed or MVC)',
                         Colors.green,
                       ),
                       const SizedBox(height: 12),

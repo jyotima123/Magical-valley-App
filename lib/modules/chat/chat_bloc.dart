@@ -6,16 +6,9 @@ import 'package:mvc_app/modules/chat/models/chat_channel.dart';
 import 'package:mvc_app/modules/chat/models/chat_message.dart';
 import 'package:mvc_app/modules/chat/models/post_reactions_model.dart';
 import 'package:mvc_app/modules/chat/chat_service.dart';
+import 'package:mvc_app/modules/chat/mvc_organization.dart';
 import 'package:mvc_app/services/api_repository.dart';
 import 'package:mvc_app/utils/logging_utils.dart';
-import 'package:mvc_app/flavour_config.dart';
-
-/// MVC official channel organization IDs - always shown in chat list
-const String _mvcOrganizationIdQa = '938562d2-0a56-41bb-9c55-520390f30aa4';
-const String _mvcOrganizationIdProduction = '2a2ceec6-aa41-4f0b-8954-b973fed287ac';
-
-String get _mvcOrganizationId =>
-    FlavorConfig.isProduction ? _mvcOrganizationIdProduction : _mvcOrganizationIdQa;
 
 // Events
 abstract class ChatEvent {}
@@ -161,8 +154,7 @@ class ChatLoadedState extends ChatState {
     // Include followed channels AND the MVC official channel (always visible)
     List<ChatChannel> filtered = allChannels
         .where((channel) =>
-            channel.isFollowed ||
-            channel.organizationId == _mvcOrganizationId)
+            isFollowedOrMvcChannel(channel.organizationId, channel.isFollowed))
         .toList();
 
     // Apply search filter

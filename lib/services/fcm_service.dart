@@ -55,8 +55,18 @@ class FCMService {
       // Request permission for notifications
       await _requestPermission();
 
-      // Initialize local notifications
-      await _initializeLocalNotifications();
+      // Initialize local notifications. Isolated in its own try/catch: a
+      // failure here (e.g. a resource-lookup issue specific to a build)
+      // must not block FCM token registration or message handlers below,
+      // which don't depend on it and matter far more for the app actually
+      // receiving notifications.
+      try {
+        await _initializeLocalNotifications();
+      } catch (e) {
+        _logger.severe(
+          'Failed to initialize local notifications (continuing without it): $e',
+        );
+      }
 
       // Get and store FCM token
       await _setupFCMToken();
@@ -328,13 +338,22 @@ class FCMService {
       iOS: iosDetails,
     );
 
-    await _localNotifications.show(
-      message.hashCode,
-      notification.title,
-      notification.body,
-      details,
-      payload: jsonEncode(message.data),
-    );
+    try {
+      await _localNotifications.show(
+        message.hashCode,
+        notification.title,
+        notification.body,
+        details,
+        payload: jsonEncode(message.data),
+      );
+    } catch (e) {
+      // If local notifications failed to initialize earlier, .show() would
+      // otherwise throw uncaught from this stream callback on every
+      // foreground message. Swallow and log instead — the OS still shows
+      // its own system notification for background/killed-state messages
+      // regardless, independent of this plugin.
+      _logger.warning('Failed to show local notification: $e');
+    }
   }
 
   // Handle notification tap

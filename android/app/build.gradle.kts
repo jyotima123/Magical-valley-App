@@ -76,6 +76,16 @@ android {
     buildTypes {
         release {
             signingConfig = signingConfigs.getByName("release")
+            // Explicitly force these off. Flutter's own Gradle plugin can
+            // apply resource-shrinking defaults for release builds that
+            // don't appear anywhere in this file's plain text, and that
+            // shrinking collapses resource names (res/xx.png-style short
+            // names) in a way that breaks any runtime lookup-by-name call,
+            // such as flutter_local_notifications resolving its icon via
+            // getIdentifier(). This project doesn't use ProGuard/R8 rules
+            // and doesn't need shrinking, so disable both explicitly.
+            isMinifyEnabled = false
+            isShrinkResources = false
         }
     }
 
