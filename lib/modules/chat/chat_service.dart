@@ -73,26 +73,19 @@ class ChatService {
 
   /// Update notification badge based on unread channel count
   /// This should be called whenever channels are loaded or unread status changes
+  ///
+  /// This used to duplicate the counting/update logic of
+  /// updateNotificationBadgeFromChannels() below, but was missing its
+  /// Android-only syncAndroidBadgeNotification() call — the fallback
+  /// notification Android needs to actually render a badge number. Since
+  /// this method runs right after login (via getChannelsWithLastMessage()),
+  /// that gap meant a freshly logged-in user's correct badge count was
+  /// computed but never visibly applied on Android, leaving the previous
+  /// account's stale badge on screen until something else (e.g. opening a
+  /// channel) happened to go through the complete path. Delegating here
+  /// instead of duplicating means the two paths can't drift apart again.
   Future<void> _updateNotificationBadge(List<ChatChannel> channels) async {
-    try {
-      // Count channels with unread messages. Only channels the user
-      // actually follows (plus the always-shown MVC official channel)
-      // should count toward the badge — see the matching comment on
-      // updateNotificationBadgeFromChannels below for why.
-      final unreadCount = channels
-          .where((channel) =>
-              isFollowedOrMvcChannel(channel.organizationId, channel.isFollowed) &&
-              channel.hasUnreadMessages)
-          .length;
-
-      final fcmService = FCMService.instance;
-      await fcmService.updateNotificationBadge(count: unreadCount);
-      print(
-        '🔍 ChatService: Updated notification badge to $unreadCount (${channels.length} total channels)',
-      );
-    } catch (e) {
-      print('🔍 ChatService: Failed to update notification badge: $e');
-    }
+    await updateNotificationBadgeFromChannels(channels);
   }
 
   Future<List<ChatChannel>> getFollowedChannelsWithLastMessage(

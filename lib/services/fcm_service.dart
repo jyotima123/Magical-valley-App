@@ -508,6 +508,23 @@ class FCMService {
 
   // Clean up on logout
   Future<void> cleanup() async {
+    // Clear the outgoing user's badge first, in its own try/catch so a
+    // failure here can never block the token cleanup below. Both calls are
+    // needed: updateNotificationBadge(0) is the iOS/AppBadgePlus clear, and
+    // syncAndroidBadgeNotification(0) cancels the Android fallback
+    // notification the badge is attached to there (see that method's
+    // comment for why Android needs this extra step). Without this, the
+    // outgoing account's badge count stayed on screen through logout and
+    // into the next login, until something unrelated happened to trigger a
+    // full badge recompute for the new user.
+    try {
+      await updateNotificationBadge(count: 0);
+      await syncAndroidBadgeNotification(0);
+      _logger.info('Badge cleared on logout');
+    } catch (e) {
+      _logger.warning('Failed to clear badge during FCM cleanup: $e');
+    }
+
     try {
       if (_fcmToken != null && _apiRepository != null) {
         await _apiRepository!.removeFCMToken(_fcmToken!);
