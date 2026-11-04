@@ -52,3 +52,6 @@ app.*.map.json
 .env_prod
 .env_qa
 .env_qa
+
+# Java heap dumps
+*.hprof
