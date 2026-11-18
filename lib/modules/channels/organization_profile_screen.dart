@@ -18,6 +18,8 @@ import 'package:mvc_app/services/api_repository.dart';
 import 'package:mvc_app/services/api_service.dart';
 import 'package:mvc_app/utils/profile_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:mvc_app/modules/admin/organizations_management_screen.dart'
+    show EditOrganizationSheet;
 
 class OrganizationProfileScreen extends StatefulWidget {
   final String organizationId;
@@ -33,6 +35,7 @@ class _OrganizationProfileScreenState extends State<OrganizationProfileScreen> {
   final ApiService _apiService = SupabaseApiService.instance;
   UserRole? _userRole;
   List<Organization> _managedOrganizations = [];
+  bool _isAdminOfCurrentOrganization = false;
   bool _isUnfollowing = false;
   bool _isLoading = true;
   Organization? _currentOrganization;
@@ -109,27 +112,60 @@ class _OrganizationProfileScreenState extends State<OrganizationProfileScreen> {
 
   Future<void> _fetchUserRoleAndManagedOrganizations() async {
     final currentUser = await _apiService.getCurrentUser();
-    if (currentUser == null) return;
 
-    final userRoleResult = await _apiService.getUserRole(
-      currentUser.userId ?? "",
-    );
-    if (userRoleResult.isSuccess) {
-      setState(() {
-        _userRole = userRoleResult.data;
-      });
-
-      if (!_userRole!.isSuperAdmin) {
-        final managedOrgsResult = await _apiService.getUserAdminOrganizations(
-          currentUser.userId ?? "",
-        );
-        if (managedOrgsResult.isSuccess) {
-          setState(() {
-            _managedOrganizations = managedOrgsResult.data ?? [];
-          });
-        }
-      }
+    if (currentUser == null ||
+        !currentUser.isSuccess ||
+        currentUser.userId == null) {
+      return;
     }
+
+    final userId = currentUser.userId!;
+    final userRoleResult = await _apiService.getUserRole(userId);
+    final userRole = userRoleResult.isSuccess ? userRoleResult.data : null;
+
+    if (!mounted) return;
+
+    setState(() {
+      _userRole = userRole;
+    });
+
+    // Superadmins can edit every channel; no channel-specific check is needed.
+    if (userRole?.isSuperAdmin == true) {
+      setState(() {
+        _managedOrganizations = [];
+        _isAdminOfCurrentOrganization = false;
+      });
+      return;
+    }
+
+    final managedOrgsResult = await _apiService.getUserAdminOrganizations(
+      userId,
+    );
+
+    final managedOrganizations = managedOrgsResult.isSuccess
+        ? managedOrgsResult.data ?? <Organization>[]
+        : <Organization>[];
+
+    var canManage = managedOrganizations.any(
+      (org) => org.id == widget.organizationId,
+    );
+
+    // Match Channel Management behavior: check this channel directly if it
+    // wasn't found in the managed-organizations list.
+    if (!canManage) {
+      final accessResult = await _apiService.isUserAdminOfOrganization(
+        userId,
+        widget.organizationId,
+      );
+      canManage = accessResult.isSuccess && accessResult.data == true;
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      _managedOrganizations = managedOrganizations;
+      _isAdminOfCurrentOrganization = canManage;
+    });
   }
 
   bool get _canSeeFollowerCount {
@@ -140,6 +176,28 @@ class _OrganizationProfileScreenState extends State<OrganizationProfileScreen> {
       );
     }
     return false;
+  }
+
+  bool get _canEditOrganization {
+    if (_userRole?.isSuperAdmin == true) return true;
+    return _isAdminOfCurrentOrganization;
+  }
+
+  void _openEditOrganizationSheet() {
+    final organization = _currentOrganization;
+    if (organization == null || !_canEditOrganization) return;
+
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => EditOrganizationSheet(
+        organization: organization,
+        onOrganizationUpdated: () {
+          _fetchOrganizationAndUserData();
+        },
+      ),
+    );
   }
 
   Future<void> _handleUnfollow() async {
@@ -402,10 +460,7 @@ class _OrganizationProfileScreenState extends State<OrganizationProfileScreen> {
         children: [
           Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
           const SizedBox(height: 16),
-          Text(
-            'Failed to load organization',
-            style: AppTheme.chatTitle,
-          ),
+          Text('Failed to load organization', style: AppTheme.chatTitle),
           const SizedBox(height: 8),
           Text(
             _error ?? 'Unknown error occurred',
@@ -439,6 +494,13 @@ class _OrganizationProfileScreenState extends State<OrganizationProfileScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
+      floatingActionButton: _canEditOrganization
+          ? FloatingActionButton(
+              onPressed: _openEditOrganizationSheet,
+              tooltip: 'Edit channel',
+              child: const Icon(Icons.edit_outlined),
+            )
+          : null,
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -689,8 +751,7 @@ class _OrganizationProfileScreenState extends State<OrganizationProfileScreen> {
             ManagementButton(
               icon: Icon(Icons.language, color: Colors.blue.shade600, size: 22),
               title: 'Website',
-              subtitle: org.websiteUrl!
-                  .replaceFirst(RegExp(r'^https?://'), ''),
+              subtitle: org.websiteUrl!.replaceFirst(RegExp(r'^https?://'), ''),
               subtitleMaxLines: 1,
               showChevron: false,
               onTap: () => _launchUrl(
@@ -706,7 +767,11 @@ class _OrganizationProfileScreenState extends State<OrganizationProfileScreen> {
             if (org.websiteUrl != null || org.bio != null)
               const Divider(height: 8),
             ManagementButton(
-              icon: Icon(Icons.location_on_outlined, color: Colors.red.shade500, size: 22),
+              icon: Icon(
+                Icons.location_on_outlined,
+                color: Colors.red.shade500,
+                size: 22,
+              ),
               title: 'Location',
               subtitle: 'Open in Google Maps',
               showChevron: false,
@@ -722,7 +787,11 @@ class _OrganizationProfileScreenState extends State<OrganizationProfileScreen> {
                 org.phoneNumbers.first != phone)
               const Divider(height: 8),
             ManagementButton(
-              icon: Icon(Icons.phone_outlined, color: Colors.green.shade600, size: 22),
+              icon: Icon(
+                Icons.phone_outlined,
+                color: Colors.green.shade600,
+                size: 22,
+              ),
               title: phone.label ?? 'Phone',
               subtitle: phone.phoneNumber,
               showChevron: false,
@@ -738,7 +807,11 @@ class _OrganizationProfileScreenState extends State<OrganizationProfileScreen> {
                 org.addresses.first != address)
               const Divider(height: 8),
             ManagementButton(
-              icon: Icon(Icons.location_on_outlined, color: Colors.red.shade400, size: 22),
+              icon: Icon(
+                Icons.location_on_outlined,
+                color: Colors.red.shade400,
+                size: 22,
+              ),
               title: address.label ?? 'Address',
               subtitle: address.formattedAddress.isNotEmpty
                   ? address.formattedAddress
@@ -814,7 +887,11 @@ class _OrganizationProfileScreenState extends State<OrganizationProfileScreen> {
                       ),
                     )
                   else
-                    Icon(Icons.person_remove_outlined, size: 16, color: Colors.red.shade400),
+                    Icon(
+                      Icons.person_remove_outlined,
+                      size: 16,
+                      color: Colors.red.shade400,
+                    ),
                   const SizedBox(width: 6),
                   Text(
                     _isUnfollowing ? 'Unfollowing...' : 'Unfollow channel',
@@ -855,9 +932,7 @@ class _OrganizationProfileScreenState extends State<OrganizationProfileScreen> {
           const SizedBox(height: 6),
           Text(
             label,
-            style: AppTheme.chatTimestamp.copyWith(
-              fontWeight: FontWeight.w500,
-            ),
+            style: AppTheme.chatTimestamp.copyWith(fontWeight: FontWeight.w500),
           ),
         ],
       ),
@@ -920,5 +995,4 @@ class _OrganizationProfileScreenState extends State<OrganizationProfileScreen> {
       organizationId: _currentOrganization!.id,
     );
   }
-
 }

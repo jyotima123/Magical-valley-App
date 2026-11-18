@@ -152,11 +152,58 @@ class _RealChatScreenState extends State<RealChatScreen>
     });
   }
 
+  Widget _buildChannelLogo(ChatChannel channel) {
+    final logoUrl = channel.logoUrl?.trim();
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: logoUrl == null || logoUrl.isEmpty
+          ? _buildDefaultChannelLogo(channel)
+          : Image.network(
+              logoUrl,
+              width: 42,
+              height: 42,
+              fit: BoxFit.cover,
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return _buildDefaultChannelLogo(channel);
+              },
+              errorBuilder: (context, error, stackTrace) {
+                return _buildDefaultChannelLogo(channel);
+              },
+            ),
+    );
+  }
+
+  Widget _buildDefaultChannelLogo(ChatChannel channel) {
+    return Container(
+      width: 42,
+      height: 42,
+      alignment: Alignment.center,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [AppTheme.accentPrimary, AppTheme.logoColor],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      child: Text(
+        channel.name.isNotEmpty ? channel.name[0].toUpperCase() : '?',
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
   // Method to navigate to chat view on mobile
   void _navigateToChatView(ChatChannel channel) {
-    // Set navigation flag to prevent recursive calls
+    // Prevent recursive navigation calls
     _isNavigatingToChat = true;
 
+    // Log chat opened event
     AmplitudeService.instance.logEvent(
       'chat_opened',
       eventProperties: {
@@ -166,47 +213,84 @@ class _RealChatScreenState extends State<RealChatScreen>
       },
     );
 
-    // Provide subtle haptic feedback when opening a chat (Android & iOS)
+    // Haptic feedback
     HapticFeedback.selectionClick();
-
-    // Note: SelectChannelEvent was already dispatched when user tapped the channel
-    // No need to dispatch it again here
 
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => Scaffold(
           appBar: AppBar(
-            title: GestureDetector(
-              onTap: () => {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => OrganizationProfileScreen(
-                      organizationId: channel.organizationId,
-                    ),
-                  ),
-                ).then((wasUnfollowed) {
-                  if (wasUnfollowed == true) {
-                    // Reload channels - this will automatically filter out unfollowed channels
-                    // and clear the selected channel if it was the one that was unfollowed
-                    context.read<ChatBloc>().add(LoadChannelsEvent());
-                  }
-                }),
-              },
-              child: Text(
-                channel.name,
-                style: TextStyle(
-                  color: (theme != AppThemeMode.dark)
-                      ? AppTheme.darkBottomBarBackground
-                      : AppTheme.cardGreyBackground,
-                ),
-              ),
-            ),
             backgroundColor: (theme == AppThemeMode.dark)
                 ? AppTheme.darkBottomBarBackground
                 : AppTheme.cardGreyBackground,
+            elevation: 0,
+            centerTitle: true,
+
+            // Clickable Channel Header
+            title: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(12),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => OrganizationProfileScreen(
+                        organizationId: channel.organizationId,
+                      ),
+                    ),
+                  ).then((wasUnfollowed) {
+                    if (wasUnfollowed == true) {
+                      // Reload channels after unfollowing
+                      context.read<ChatBloc>().add(LoadChannelsEvent());
+                    }
+                  });
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 6,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Channel Image (42 x 42)
+                      _buildChannelLogo(channel),
+                      const SizedBox(width: 10),
+
+                      // Channel Name
+                      Flexible(
+                        child: Text(
+                          channel.name.length > 22
+                              ? '${channel.name.substring(0, 22)}...'
+                              : channel.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(width: 6),
+
+                      // Downward Chevron
+                      Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        size: 22,
+                        color: AppTheme.primaryHeadingColor,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
+
+          // Chat Body
           body: BlocBuilder<ChatBloc, ChatState>(
             builder: (context, state) {
               if (state is ChatLoadedState) {
@@ -216,17 +300,19 @@ class _RealChatScreenState extends State<RealChatScreen>
                   theme: theme,
                 );
               }
+
               return const Center(child: CircularProgressIndicator());
             },
           ),
         ),
       ),
     ).then((_) {
-      // Save post views when returning from chat view (mobile navigation)
+      // Save post views when returning from chat view
       if (_previouslySelectedChannelId != null) {
         ChatView.savePostViewsForChannel(_previouslySelectedChannelId, context);
       }
 
+      // Log chat closed event
       AmplitudeService.instance.logEvent(
         'chat_closed',
         eventProperties: {
@@ -236,10 +322,12 @@ class _RealChatScreenState extends State<RealChatScreen>
         },
       );
 
-      // Reset navigation flags when returning from chat view
+      // Reset navigation state
       _isNavigatingToChat = false;
+
       context.read<ChatBloc>().add(ClearSelectedChannelEvent());
-      // Reset the previously selected channel so user can tap same channel again
+
+      // Allow the same channel to be selected again
       _previouslySelectedChannelId = null;
     });
   }
