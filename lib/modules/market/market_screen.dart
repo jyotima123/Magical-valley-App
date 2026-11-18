@@ -11,6 +11,7 @@ import 'package:mvc_app/modules/market/market_repository.dart';
 import 'package:mvc_app/modules/market/my_listings_screen.dart';
 import 'package:mvc_app/modules/market/widgets/cars_carousel_card.dart';
 import 'package:mvc_app/modules/market/widgets/pressable_scale.dart';
+import 'package:mvc_app/modules/market/widgets/staggered_entrance.dart';
 import 'package:mvc_app/services/first_run_service.dart';
 
 /// Root of the Market tab: Cars as a card of its own, with the newest inventory
@@ -275,7 +276,7 @@ class _MarketScreenState extends State<MarketScreen>
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
             sliver: SliverToBoxAdapter(
-              child: _Entrance(
+              child: StaggeredEntrance(
                 animation: _entrance,
                 index: 0,
                 child: const _Heading(),
@@ -286,7 +287,7 @@ class _MarketScreenState extends State<MarketScreen>
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(16, 18, 16, 0),
               sliver: SliverToBoxAdapter(
-                child: _Entrance(
+                child: StaggeredEntrance(
                   animation: _entrance,
                   index: 1,
                   child: CarsCarouselCard(
@@ -301,7 +302,7 @@ class _MarketScreenState extends State<MarketScreen>
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(20, 28, 20, 2),
             sliver: SliverToBoxAdapter(
-              child: _Entrance(
+              child: StaggeredEntrance(
                 animation: _entrance,
                 index: 2,
                 child: const Text(
@@ -328,7 +329,7 @@ class _MarketScreenState extends State<MarketScreen>
               ),
               // Cars has its own card above, so the grid is everything else.
               itemCount: tiled.length,
-              itemBuilder: (_, i) => _Entrance(
+              itemBuilder: (_, i) => StaggeredEntrance(
                 animation: _entrance,
                 index: 3 + i,
                 child: _CategoryTile(
@@ -385,44 +386,6 @@ class _Heading extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-/// Fades and lifts a section into place, each [index] a beat after the one
-/// before, so the screen assembles itself top to bottom instead of popping in.
-class _Entrance extends StatelessWidget {
-  const _Entrance({
-    required this.animation,
-    required this.index,
-    required this.child,
-  });
-
-  /// Sections past this many all arrive together; a long grid would otherwise
-  /// keep the last tiles waiting.
-  static const int _staggered = 10;
-
-  final Animation<double> animation;
-  final int index;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    final start = (index.clamp(0, _staggered) * 0.06).clamp(0.0, 0.6);
-    final curve = Interval(start, start + 0.4, curve: Curves.easeOutCubic);
-    return AnimatedBuilder(
-      animation: animation,
-      builder: (_, child) {
-        final t = curve.transform(animation.value);
-        return Opacity(
-          opacity: t,
-          child: FractionalTranslation(
-            translation: Offset(0, 0.12 * (1 - t)),
-            child: child,
-          ),
-        );
-      },
-      child: child,
     );
   }
 }
@@ -521,9 +484,7 @@ class _CategoryTile extends StatelessWidget {
                     height: 1.2,
                     fontWeight: FontWeight.w700,
                     color: Colors.white,
-                    shadows: [
-                      Shadow(color: Color(0x66000000), blurRadius: 8),
-                    ],
+                    shadows: [Shadow(color: Color(0x66000000), blurRadius: 8)],
                   ),
                 ),
               ),

@@ -31,19 +31,28 @@ class MarketRepository {
         .toList();
   }
 
-  /// One page of a category, newest first. Sold items stay in the results —
-  /// they are shown as sold rather than hidden, as on the Cars screen.
+  /// One page of a category, newest first. A sold item stays in the results,
+  /// shown as sold, for 24h after the sale, then clears (sold_at is set by the
+  /// market_items_sold_at trigger, 090), as on the Cars screen.
+  ///
+  /// Community listings only: a shelter animal someone has messaged about is
+  /// mirrored into market_items (088), but the live feed is what lists it.
   Future<List<MarketItem>> fetchItems({
     required String category,
     String search = '',
     required int offset,
     required int limit,
   }) async {
-    // An item shows under both of its categories.
+    final soldCutoff =
+        DateTime.now().toUtc().subtract(const Duration(hours: 24));
+    // An item shows under both of its categories. Two .or() calls AND
+    // together: (either category) AND (unsold or sold within 24h).
     var query = _client
         .from('market_items')
         .select()
-        .or('category.eq.$category,secondary_category.eq.$category');
+        .eq('source', 'community')
+        .or('category.eq.$category,secondary_category.eq.$category')
+        .or('is_sold.eq.false,sold_at.gt.${soldCutoff.toIso8601String()}');
     final term = search.trim();
     if (term.isNotEmpty) {
       query = query.ilike('title', '%${_escapeLike(term)}%');
@@ -54,6 +63,44 @@ class MarketRepository {
     return (rows as List)
         .map((e) => MarketItem.fromJson(e as Map<String, dynamic>))
         .toList();
+  }
+
+  /// A category's currently promoted items, the most recently promoted first.
+  /// Sold items drop out: the carousel is for things that can still be had.
+  Future<List<MarketItem>> fetchPromoted({required String category}) async {
+    final rows = await _client
+        .from('market_items')
+        .select()
+        .eq('source', 'community')
+        .eq('is_sold', false)
+        .gt('promoted_until', DateTime.now().toUtc().toIso8601String())
+        .or('category.eq.$category,secondary_category.eq.$category')
+        .order('promoted_until', ascending: false)
+        .limit(20);
+    return (rows as List)
+        .map((e) => MarketItem.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  /// Promotes [id] until [until], or ends its promotion when null. Refused by
+  /// the database for anyone but a superadmin (089).
+  Future<void> setPromotion(String id, DateTime? until) =>
+      updateItem(id, {'promoted_until': until?.toUtc().toIso8601String()});
+
+  /// Whether the signed-in user may promote listings.
+  Future<bool> isSuperadmin() async {
+    final userId = currentUserId;
+    if (userId == null) return false;
+    try {
+      final row = await _client
+          .from('user_profiles')
+          .select('role')
+          .eq('id', userId)
+          .maybeSingle();
+      return row?['role'] == 'superadmin';
+    } catch (_) {
+      return false;
+    }
   }
 
   Future<MarketItem> fetchItem(String id) async {

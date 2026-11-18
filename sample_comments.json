@@ -1,0 +1,1325 @@
+{
+  "metadata": {
+    "pull_request_id": 80121,
+    "title": "feat(RET-281): Amplitude Events for check-in - single appointment",
+    "description": "## Proposed Changes\nImplementation of check in for single appointment in amplitude\n\n\n\n- [X] Feature\n- [ ] Bugfix\n- [ ] Code style update (formatting)\n- [ ] Refactoring (no functional changes, no api changes)\n- [ ] Pipeline related changes\n- [ ] Documentation content changes\n- [ ] Other... Please describe:     \n\n## Description\nThis PR implements amplitude events for single appointments.\n\n## Visuals\nNo visuals changed. See some of the events on amplitude dashboard:\n\n![image (2).png](https://vcavsts.visualstudio.com/d0bf69bb-dddd-4aea-9d98-cf85c8ac0318/_apis/git/repositories/e5cecc5d-72f6-4f98-9cff-45a64d929ccc/pullRequests/80121/attachments/image%20%282%29.png) \n\n## Checklist\nThis pull request fulfills the following requirements :\n\n[comment]:# (Please strikethrough  non-applicable items \\(https://docs.microsoft.com/en-us/azure/devops/project/wiki/markdown-guidance?view=azure-devops#emphasis-bold-italics-strikethrough\\))\n\n- [ ] All AC's were implemented and verified.\n- [ ] Code documentation was updated.\n- [x] Tested on all relevant platforms.\n- [ ] Automated tests were updated.\n- [ ] Proper work items are linked to this PR.\n- [ ] Risk Areas filled out in work item.\n \n\n[comment]:# (Please provide any additional information if necessary)\n",
+    "source_branch": "dev/alda/amplitude-events-check-in-for-single-appointment",
+    "target_branch": "feature/new-amplitude",
+    "status": "Active",
+    "is_draft": false,
+    "created_by": {
+      "display_name": "Alisson Damasceno",
+      "email": "Alisson.Damasceno@vca.com"
+    },
+    "creation_date": "2026-01-28T17:41:37.654000+00:00",
+    "repository": {
+      "name": "RetrieverPlus",
+      "project": "VCAProduct",
+      "web_url": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus"
+    },
+    "url": "https://vcavsts.visualstudio.com/d0bf69bb-dddd-4aea-9d98-cf85c8ac0318/_apis/git/repositories/e5cecc5d-72f6-4f98-9cff-45a64d929ccc/pullRequests/80121"
+  },
+  "comments": [
+    {
+      "thread_id": 695891,
+      "comment_id": 1,
+      "is_reply": false,
+      "file_name": "check_in_screen.dart",
+      "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_screen.dart",
+      "lines_modified": {
+        "start_line": 73,
+        "end_line": 73,
+        "side": "right"
+      },
+      "original_lines": {
+        "iteration": 1,
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_screen.dart",
+        "start_line": 73,
+        "end_line": 73,
+        "side": "right"
+      },
+      "author": {
+        "display_name": "Edwin Gonzalez",
+        "email": "Edwin.Gonzalez@vca.com"
+      },
+      "content": "This comment is not needed since the function name is explicit enough",
+      "comment_type": "Text",
+      "status": "Fixed",
+      "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_screen.dart&discussionId=695891",
+      "published_date": "2026-01-30T03:21:01.913000+00:00",
+      "last_updated_date": "2026-01-30T03:21:01.913000+00:00"
+    },
+    {
+      "thread_id": 695892,
+      "comment_id": 1,
+      "is_reply": false,
+      "file_name": "check_in_screen.dart",
+      "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_screen.dart",
+      "lines_modified": {
+        "start_line": 79,
+        "end_line": 79,
+        "side": "right"
+      },
+      "original_lines": {
+        "iteration": 1,
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_screen.dart",
+        "start_line": 80,
+        "end_line": 80,
+        "side": "right"
+      },
+      "author": {
+        "display_name": "Edwin Gonzalez",
+        "email": "Edwin.Gonzalez@vca.com"
+      },
+      "content": "You can define this one after `clientModel` so the client info is all together",
+      "comment_type": "Text",
+      "status": "Fixed",
+      "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_screen.dart&discussionId=695892",
+      "published_date": "2026-01-30T03:23:12.420000+00:00",
+      "last_updated_date": "2026-01-30T03:23:12.420000+00:00"
+    },
+    {
+      "thread_id": 695893,
+      "comment_id": 1,
+      "is_reply": false,
+      "file_name": "check_in_screen.dart",
+      "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_screen.dart",
+      "lines_modified": {
+        "start_line": 76,
+        "end_line": 76,
+        "side": "right"
+      },
+      "original_lines": {
+        "iteration": 1,
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_screen.dart",
+        "start_line": 77,
+        "end_line": 77,
+        "side": "right"
+      },
+      "author": {
+        "display_name": "Edwin Gonzalez",
+        "email": "Edwin.Gonzalez@vca.com"
+      },
+      "content": "You can rename this to `_logLandingEvent()` and pass the event name as a parameter. That will allow you to reuse it for both landing and back.",
+      "comment_type": "Text",
+      "status": "Fixed",
+      "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_screen.dart&discussionId=695893",
+      "published_date": "2026-01-30T03:26:15.743000+00:00",
+      "last_updated_date": "2026-01-30T03:26:29.393000+00:00"
+    },
+    {
+      "thread_id": 695894,
+      "comment_id": 1,
+      "is_reply": false,
+      "file_name": "check_in_screen.dart",
+      "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_screen.dart",
+      "lines_modified": {
+        "start_line": 170,
+        "end_line": 170,
+        "side": "right"
+      },
+      "original_lines": {
+        "iteration": 1,
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_screen.dart",
+        "start_line": 121,
+        "end_line": 121,
+        "side": "right"
+      },
+      "author": {
+        "display_name": "Edwin Gonzalez",
+        "email": "Edwin.Gonzalez@vca.com"
+      },
+      "content": "This event is not being logged if I back with the physical back button of the device",
+      "comment_type": "Text",
+      "status": "Fixed",
+      "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_screen.dart&discussionId=695894",
+      "published_date": "2026-01-30T03:30:44.947000+00:00",
+      "last_updated_date": "2026-01-30T03:30:44.947000+00:00"
+    },
+    {
+      "thread_id": 695895,
+      "comment_id": 1,
+      "is_reply": false,
+      "file_name": "check_in_welcome_bottom_sheet.dart",
+      "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_welcome_bottom_sheet.dart",
+      "lines_modified": {
+        "start_line": 30,
+        "end_line": 30,
+        "side": "right"
+      },
+      "original_lines": {
+        "iteration": 1,
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_welcome_bottom_sheet.dart",
+        "start_line": 31,
+        "end_line": 31,
+        "side": "right"
+      },
+      "author": {
+        "display_name": "Edwin Gonzalez",
+        "email": "Edwin.Gonzalez@vca.com"
+      },
+      "content": "1. Please define this after the function that uses it, so we can read top-down.\n2. Please make it reusable for both events in the class.",
+      "comment_type": "Text",
+      "status": "Fixed",
+      "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_welcome_bottom_sheet.dart&discussionId=695895",
+      "published_date": "2026-01-30T03:42:20.597000+00:00",
+      "last_updated_date": "2026-01-30T03:42:20.597000+00:00"
+    },
+    {
+      "thread_id": 695896,
+      "comment_id": 1,
+      "is_reply": false,
+      "file_name": "check_in_thank_you_screen.dart",
+      "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_thank_you_screen.dart",
+      "lines_modified": {
+        "start_line": 396,
+        "end_line": 396,
+        "side": "right"
+      },
+      "original_lines": {
+        "iteration": 1,
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_thank_you_screen.dart",
+        "start_line": 397,
+        "end_line": 397,
+        "side": "right"
+      },
+      "author": {
+        "display_name": "Edwin Gonzalez",
+        "email": "Edwin.Gonzalez@vca.com"
+      },
+      "content": "This comment is not needed",
+      "comment_type": "Text",
+      "status": "Fixed",
+      "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_thank_you_screen.dart&discussionId=695896",
+      "published_date": "2026-01-30T03:44:00.740000+00:00",
+      "last_updated_date": "2026-01-30T03:44:00.740000+00:00"
+    },
+    {
+      "thread_id": 695897,
+      "comment_id": 1,
+      "is_reply": false,
+      "file_name": "check_in_patient_photo_update.dart",
+      "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_patient_photo_update.dart",
+      "lines_modified": {
+        "start_line": 47,
+        "end_line": 47,
+        "side": "right"
+      },
+      "original_lines": {
+        "iteration": 1,
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_patient_photo_update.dart",
+        "start_line": 50,
+        "end_line": 50,
+        "side": "right"
+      },
+      "author": {
+        "display_name": "Edwin Gonzalez",
+        "email": "Edwin.Gonzalez@vca.com"
+      },
+      "content": "Please make it reusable for all events in the class.",
+      "comment_type": "Text",
+      "status": "Fixed",
+      "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_patient_photo_update.dart&discussionId=695897",
+      "published_date": "2026-01-30T03:47:38.353000+00:00",
+      "last_updated_date": "2026-01-30T03:47:38.353000+00:00"
+    },
+    {
+      "thread_id": 695898,
+      "comment_id": 1,
+      "is_reply": false,
+      "file_name": "check_in_patient_photo_update.dart",
+      "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_patient_photo_update.dart",
+      "lines_modified": {
+        "start_line": 47,
+        "end_line": 47,
+        "side": "right"
+      },
+      "original_lines": {
+        "iteration": 1,
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_patient_photo_update.dart",
+        "start_line": 61,
+        "end_line": 61,
+        "side": "right"
+      },
+      "author": {
+        "display_name": "Edwin Gonzalez",
+        "email": "Edwin.Gonzalez@vca.com"
+      },
+      "content": "Please define the fallback value in the assignment line, like you did for `clientName`, for consistency.",
+      "comment_type": "Text",
+      "status": "Fixed",
+      "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_patient_photo_update.dart&discussionId=695898",
+      "published_date": "2026-01-30T03:49:07.350000+00:00",
+      "last_updated_date": "2026-01-30T03:49:07.350000+00:00"
+    },
+    {
+      "thread_id": 695899,
+      "comment_id": 1,
+      "is_reply": false,
+      "file_name": "check_in_patient_information_bottom_sheet.dart",
+      "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_patient_information_bottom_sheet.dart",
+      "lines_modified": {
+        "start_line": 74,
+        "end_line": 74,
+        "side": "right"
+      },
+      "original_lines": {
+        "iteration": 1,
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_patient_information_bottom_sheet.dart",
+        "start_line": 105,
+        "end_line": 106,
+        "side": "right"
+      },
+      "author": {
+        "display_name": "Edwin Gonzalez",
+        "email": "Edwin.Gonzalez@vca.com"
+      },
+      "content": "Why not keeping the constants?",
+      "comment_type": "Text",
+      "status": "Fixed",
+      "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_patient_information_bottom_sheet.dart&discussionId=695899",
+      "published_date": "2026-01-30T03:49:56.900000+00:00",
+      "last_updated_date": "2026-01-30T03:49:56.900000+00:00"
+    },
+    {
+      "thread_id": 695900,
+      "comment_id": 1,
+      "is_reply": false,
+      "file_name": "check_in_patient_information_bottom_sheet.dart",
+      "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_patient_information_bottom_sheet.dart",
+      "lines_modified": {
+        "start_line": 74,
+        "end_line": 74,
+        "side": "right"
+      },
+      "original_lines": {
+        "iteration": 1,
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_patient_information_bottom_sheet.dart",
+        "start_line": 108,
+        "end_line": 108,
+        "side": "right"
+      },
+      "author": {
+        "display_name": "Edwin Gonzalez",
+        "email": "Edwin.Gonzalez@vca.com"
+      },
+      "content": "Please create a reusable function for both events",
+      "comment_type": "Text",
+      "status": "Fixed",
+      "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_patient_information_bottom_sheet.dart&discussionId=695900",
+      "published_date": "2026-01-30T03:54:29.897000+00:00",
+      "last_updated_date": "2026-01-30T03:55:45.133000+00:00"
+    },
+    {
+      "thread_id": 695901,
+      "comment_id": 1,
+      "is_reply": false,
+      "file_name": "check_in_bottom_sheet.dart",
+      "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_bottom_sheet.dart",
+      "lines_modified": {
+        "start_line": 38,
+        "end_line": 38,
+        "side": "right"
+      },
+      "original_lines": {
+        "iteration": 1,
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_bottom_sheet.dart",
+        "start_line": 65,
+        "end_line": 65,
+        "side": "right"
+      },
+      "author": {
+        "display_name": "Edwin Gonzalez",
+        "email": "Edwin.Gonzalez@vca.com"
+      },
+      "content": "Please create a reusable function for both events",
+      "comment_type": "Text",
+      "status": "Fixed",
+      "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_bottom_sheet.dart&discussionId=695901",
+      "published_date": "2026-01-30T03:55:32.080000+00:00",
+      "last_updated_date": "2026-01-30T03:55:39.077000+00:00"
+    },
+    {
+      "thread_id": 695902,
+      "comment_id": 1,
+      "is_reply": false,
+      "file_name": "check_in_consent_screen.dart",
+      "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+      "lines_modified": {
+        "start_line": 41,
+        "end_line": 41,
+        "side": "right"
+      },
+      "original_lines": {
+        "iteration": 1,
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+        "start_line": 52,
+        "end_line": 52,
+        "side": "right"
+      },
+      "author": {
+        "display_name": "Edwin Gonzalez",
+        "email": "Edwin.Gonzalez@vca.com"
+      },
+      "content": "Patient count is not needed here",
+      "comment_type": "Text",
+      "status": "Fixed",
+      "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_consent_screen.dart&discussionId=695902",
+      "published_date": "2026-01-30T03:59:33.827000+00:00",
+      "last_updated_date": "2026-01-30T03:59:33.827000+00:00"
+    },
+    {
+      "thread_id": 695903,
+      "comment_id": 1,
+      "is_reply": false,
+      "file_name": "check_in_consent_screen.dart",
+      "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+      "lines_modified": {
+        "start_line": 41,
+        "end_line": 41,
+        "side": "right"
+      },
+      "original_lines": {
+        "iteration": 1,
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+        "start_line": 48,
+        "end_line": 48,
+        "side": "right"
+      },
+      "author": {
+        "display_name": "Edwin Gonzalez",
+        "email": "Edwin.Gonzalez@vca.com"
+      },
+      "content": "Please create a reusable function for all events",
+      "comment_type": "Text",
+      "status": "Fixed",
+      "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_consent_screen.dart&discussionId=695903",
+      "published_date": "2026-01-30T04:01:47.410000+00:00",
+      "last_updated_date": "2026-01-30T04:01:47.410000+00:00"
+    },
+    {
+      "thread_id": 695904,
+      "comment_id": 1,
+      "is_reply": false,
+      "file_name": "check_in_consent_screen.dart",
+      "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+      "lines_modified": {
+        "start_line": 41,
+        "end_line": 41,
+        "side": "right"
+      },
+      "original_lines": {
+        "iteration": 1,
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+        "start_line": 58,
+        "end_line": 58,
+        "side": "right"
+      },
+      "author": {
+        "display_name": "Edwin Gonzalez",
+        "email": "Edwin.Gonzalez@vca.com"
+      },
+      "content": "Please define this after the function that uses it, so we can read top-down.",
+      "comment_type": "Text",
+      "status": "Fixed",
+      "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_consent_screen.dart&discussionId=695904",
+      "published_date": "2026-01-30T04:02:26.100000+00:00",
+      "last_updated_date": "2026-01-30T04:02:26.100000+00:00"
+    },
+    {
+      "thread_id": 695905,
+      "comment_id": 1,
+      "is_reply": false,
+      "file_name": "check_in_consent_screen.dart",
+      "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+      "lines_modified": {
+        "start_line": 41,
+        "end_line": 41,
+        "side": "right"
+      },
+      "original_lines": {
+        "iteration": 1,
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+        "start_line": 75,
+        "end_line": 75,
+        "side": "right"
+      },
+      "author": {
+        "display_name": "Edwin Gonzalez",
+        "email": "Edwin.Gonzalez@vca.com"
+      },
+      "content": "Please define this after the function that uses it, so we can read top-down.",
+      "comment_type": "Text",
+      "status": "Fixed",
+      "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_consent_screen.dart&discussionId=695905",
+      "published_date": "2026-01-30T04:02:29.170000+00:00",
+      "last_updated_date": "2026-01-30T04:02:29.170000+00:00"
+    },
+    {
+      "thread_id": 695905,
+      "comment_id": 2,
+      "is_reply": true,
+      "file_name": "check_in_consent_screen.dart",
+      "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+      "lines_modified": {
+        "start_line": 41,
+        "end_line": 41,
+        "side": "right"
+      },
+      "original_lines": {
+        "iteration": 1,
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+        "start_line": 75,
+        "end_line": 75,
+        "side": "right"
+      },
+      "author": {
+        "display_name": "Alisson Damasceno",
+        "email": "Alisson.Damasceno@vca.com"
+      },
+      "content": "Done",
+      "comment_type": "Text",
+      "status": "Fixed",
+      "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_consent_screen.dart&discussionId=695905",
+      "published_date": "2026-01-30T20:12:41.340000+00:00",
+      "last_updated_date": "2026-01-30T20:12:41.340000+00:00"
+    },
+    {
+      "thread_id": 695906,
+      "comment_id": 1,
+      "is_reply": false,
+      "file_name": "check_in_consent_screen.dart",
+      "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+      "lines_modified": {
+        "start_line": 41,
+        "end_line": 41,
+        "side": "right"
+      },
+      "original_lines": {
+        "iteration": 1,
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+        "start_line": 80,
+        "end_line": 80,
+        "side": "right"
+      },
+      "author": {
+        "display_name": "Edwin Gonzalez",
+        "email": "Edwin.Gonzalez@vca.com"
+      },
+      "content": "Please log the event only when the navigation is going to happen (If there's internet)",
+      "comment_type": "Text",
+      "status": "Fixed",
+      "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_consent_screen.dart&discussionId=695906",
+      "published_date": "2026-01-30T04:03:46.443000+00:00",
+      "last_updated_date": "2026-01-30T04:03:46.443000+00:00"
+    },
+    {
+      "thread_id": 695906,
+      "comment_id": 2,
+      "is_reply": true,
+      "file_name": "check_in_consent_screen.dart",
+      "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+      "lines_modified": {
+        "start_line": 41,
+        "end_line": 41,
+        "side": "right"
+      },
+      "original_lines": {
+        "iteration": 1,
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+        "start_line": 80,
+        "end_line": 80,
+        "side": "right"
+      },
+      "author": {
+        "display_name": "Alisson Damasceno",
+        "email": "Alisson.Damasceno@vca.com"
+      },
+      "content": "Done in https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/commit/77dc12ff01fb8ee46d1596cfd4a8b49ad8f4da22?refName=refs/heads/dev/alda/amplitude-events-check-in-for-single-appointment",
+      "comment_type": "Text",
+      "status": "Fixed",
+      "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_consent_screen.dart&discussionId=695906",
+      "published_date": "2026-01-30T20:12:37.290000+00:00",
+      "last_updated_date": "2026-01-30T20:12:37.290000+00:00"
+    },
+    {
+      "thread_id": 696066,
+      "comment_id": 1,
+      "is_reply": false,
+      "file_name": "check_in_consent_screen.dart",
+      "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+      "lines_modified": {
+        "start_line": 174,
+        "end_line": 174,
+        "side": "right"
+      },
+      "original_lines": {
+        "iteration": 2,
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+        "start_line": 173,
+        "end_line": 173,
+        "side": "right"
+      },
+      "author": {
+        "display_name": "Edwin Gonzalez",
+        "email": "Edwin.Gonzalez@vca.com"
+      },
+      "content": "Sorry, I made a mistake in my previous comment about this. I checked with VCA and we should log the event even if there's no internet (We care about the tap here, not about what it triggers). You can put the log at the beggining of this function.",
+      "comment_type": "Text",
+      "status": "Fixed",
+      "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_consent_screen.dart&discussionId=696066",
+      "published_date": "2026-02-02T03:12:58.297000+00:00",
+      "last_updated_date": "2026-02-02T03:12:58.297000+00:00"
+    },
+    {
+      "thread_id": 696066,
+      "comment_id": 2,
+      "is_reply": true,
+      "file_name": "check_in_consent_screen.dart",
+      "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+      "lines_modified": {
+        "start_line": 174,
+        "end_line": 174,
+        "side": "right"
+      },
+      "original_lines": {
+        "iteration": 2,
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+        "start_line": 173,
+        "end_line": 173,
+        "side": "right"
+      },
+      "author": {
+        "display_name": "Alisson Damasceno",
+        "email": "Alisson.Damasceno@vca.com"
+      },
+      "content": "Fixed in 18c85b3e31a2ab0f63b25190902442fc3ee1c06b",
+      "comment_type": "Text",
+      "status": "Fixed",
+      "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_consent_screen.dart&discussionId=696066",
+      "published_date": "2026-02-03T20:27:39.700000+00:00",
+      "last_updated_date": "2026-02-03T20:27:39.700000+00:00"
+    },
+    {
+      "thread_id": 696169,
+      "comment_id": 1,
+      "is_reply": false,
+      "file_name": "check_in_patient_information_bottom_sheet.dart",
+      "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_patient_information_bottom_sheet.dart",
+      "lines_modified": {
+        "start_line": 157,
+        "end_line": 162,
+        "side": "right"
+      },
+      "original_lines": {
+        "iteration": 2,
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_patient_information_bottom_sheet.dart",
+        "start_line": 159,
+        "end_line": 166,
+        "side": "right"
+      },
+      "author": {
+        "display_name": "Edwin Gonzalez",
+        "email": "Edwin.Gonzalez@vca.com"
+      },
+      "content": "Some of these parameters are not really used, or redundant.",
+      "comment_type": "Text",
+      "status": "Fixed",
+      "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_patient_information_bottom_sheet.dart&discussionId=696169",
+      "published_date": "2026-02-03T03:37:21.087000+00:00",
+      "last_updated_date": "2026-02-03T03:37:21.087000+00:00"
+    },
+    {
+      "thread_id": 696169,
+      "comment_id": 2,
+      "is_reply": true,
+      "file_name": "check_in_patient_information_bottom_sheet.dart",
+      "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_patient_information_bottom_sheet.dart",
+      "lines_modified": {
+        "start_line": 157,
+        "end_line": 162,
+        "side": "right"
+      },
+      "original_lines": {
+        "iteration": 2,
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_patient_information_bottom_sheet.dart",
+        "start_line": 159,
+        "end_line": 166,
+        "side": "right"
+      },
+      "author": {
+        "display_name": "Alisson Damasceno",
+        "email": "Alisson.Damasceno@vca.com"
+      },
+      "content": "Done in abb46a724c810855d00c67288cd5ba85342b6c16",
+      "comment_type": "Text",
+      "status": "Fixed",
+      "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_patient_information_bottom_sheet.dart&discussionId=696169",
+      "published_date": "2026-02-03T20:34:04.840000+00:00",
+      "last_updated_date": "2026-02-03T20:34:04.840000+00:00"
+    }
+  ],
+  "comments_by_file": {
+    "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_screen.dart": [
+      {
+        "thread_id": 695891,
+        "comment_id": 1,
+        "is_reply": false,
+        "file_name": "check_in_screen.dart",
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_screen.dart",
+        "lines_modified": {
+          "start_line": 73,
+          "end_line": 73,
+          "side": "right"
+        },
+        "original_lines": {
+          "iteration": 1,
+          "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_screen.dart",
+          "start_line": 73,
+          "end_line": 73,
+          "side": "right"
+        },
+        "author": {
+          "display_name": "Edwin Gonzalez",
+          "email": "Edwin.Gonzalez@vca.com"
+        },
+        "content": "This comment is not needed since the function name is explicit enough",
+        "comment_type": "Text",
+        "status": "Fixed",
+        "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_screen.dart&discussionId=695891",
+        "published_date": "2026-01-30T03:21:01.913000+00:00",
+        "last_updated_date": "2026-01-30T03:21:01.913000+00:00"
+      },
+      {
+        "thread_id": 695892,
+        "comment_id": 1,
+        "is_reply": false,
+        "file_name": "check_in_screen.dart",
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_screen.dart",
+        "lines_modified": {
+          "start_line": 79,
+          "end_line": 79,
+          "side": "right"
+        },
+        "original_lines": {
+          "iteration": 1,
+          "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_screen.dart",
+          "start_line": 80,
+          "end_line": 80,
+          "side": "right"
+        },
+        "author": {
+          "display_name": "Edwin Gonzalez",
+          "email": "Edwin.Gonzalez@vca.com"
+        },
+        "content": "You can define this one after `clientModel` so the client info is all together",
+        "comment_type": "Text",
+        "status": "Fixed",
+        "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_screen.dart&discussionId=695892",
+        "published_date": "2026-01-30T03:23:12.420000+00:00",
+        "last_updated_date": "2026-01-30T03:23:12.420000+00:00"
+      },
+      {
+        "thread_id": 695893,
+        "comment_id": 1,
+        "is_reply": false,
+        "file_name": "check_in_screen.dart",
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_screen.dart",
+        "lines_modified": {
+          "start_line": 76,
+          "end_line": 76,
+          "side": "right"
+        },
+        "original_lines": {
+          "iteration": 1,
+          "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_screen.dart",
+          "start_line": 77,
+          "end_line": 77,
+          "side": "right"
+        },
+        "author": {
+          "display_name": "Edwin Gonzalez",
+          "email": "Edwin.Gonzalez@vca.com"
+        },
+        "content": "You can rename this to `_logLandingEvent()` and pass the event name as a parameter. That will allow you to reuse it for both landing and back.",
+        "comment_type": "Text",
+        "status": "Fixed",
+        "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_screen.dart&discussionId=695893",
+        "published_date": "2026-01-30T03:26:15.743000+00:00",
+        "last_updated_date": "2026-01-30T03:26:29.393000+00:00"
+      },
+      {
+        "thread_id": 695894,
+        "comment_id": 1,
+        "is_reply": false,
+        "file_name": "check_in_screen.dart",
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_screen.dart",
+        "lines_modified": {
+          "start_line": 170,
+          "end_line": 170,
+          "side": "right"
+        },
+        "original_lines": {
+          "iteration": 1,
+          "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_screen.dart",
+          "start_line": 121,
+          "end_line": 121,
+          "side": "right"
+        },
+        "author": {
+          "display_name": "Edwin Gonzalez",
+          "email": "Edwin.Gonzalez@vca.com"
+        },
+        "content": "This event is not being logged if I back with the physical back button of the device",
+        "comment_type": "Text",
+        "status": "Fixed",
+        "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_screen.dart&discussionId=695894",
+        "published_date": "2026-01-30T03:30:44.947000+00:00",
+        "last_updated_date": "2026-01-30T03:30:44.947000+00:00"
+      }
+    ],
+    "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_welcome_bottom_sheet.dart": [
+      {
+        "thread_id": 695895,
+        "comment_id": 1,
+        "is_reply": false,
+        "file_name": "check_in_welcome_bottom_sheet.dart",
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_welcome_bottom_sheet.dart",
+        "lines_modified": {
+          "start_line": 30,
+          "end_line": 30,
+          "side": "right"
+        },
+        "original_lines": {
+          "iteration": 1,
+          "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_welcome_bottom_sheet.dart",
+          "start_line": 31,
+          "end_line": 31,
+          "side": "right"
+        },
+        "author": {
+          "display_name": "Edwin Gonzalez",
+          "email": "Edwin.Gonzalez@vca.com"
+        },
+        "content": "1. Please define this after the function that uses it, so we can read top-down.\n2. Please make it reusable for both events in the class.",
+        "comment_type": "Text",
+        "status": "Fixed",
+        "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_welcome_bottom_sheet.dart&discussionId=695895",
+        "published_date": "2026-01-30T03:42:20.597000+00:00",
+        "last_updated_date": "2026-01-30T03:42:20.597000+00:00"
+      }
+    ],
+    "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_thank_you_screen.dart": [
+      {
+        "thread_id": 695896,
+        "comment_id": 1,
+        "is_reply": false,
+        "file_name": "check_in_thank_you_screen.dart",
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_thank_you_screen.dart",
+        "lines_modified": {
+          "start_line": 396,
+          "end_line": 396,
+          "side": "right"
+        },
+        "original_lines": {
+          "iteration": 1,
+          "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_thank_you_screen.dart",
+          "start_line": 397,
+          "end_line": 397,
+          "side": "right"
+        },
+        "author": {
+          "display_name": "Edwin Gonzalez",
+          "email": "Edwin.Gonzalez@vca.com"
+        },
+        "content": "This comment is not needed",
+        "comment_type": "Text",
+        "status": "Fixed",
+        "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_thank_you_screen.dart&discussionId=695896",
+        "published_date": "2026-01-30T03:44:00.740000+00:00",
+        "last_updated_date": "2026-01-30T03:44:00.740000+00:00"
+      }
+    ],
+    "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_patient_photo_update.dart": [
+      {
+        "thread_id": 695897,
+        "comment_id": 1,
+        "is_reply": false,
+        "file_name": "check_in_patient_photo_update.dart",
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_patient_photo_update.dart",
+        "lines_modified": {
+          "start_line": 47,
+          "end_line": 47,
+          "side": "right"
+        },
+        "original_lines": {
+          "iteration": 1,
+          "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_patient_photo_update.dart",
+          "start_line": 50,
+          "end_line": 50,
+          "side": "right"
+        },
+        "author": {
+          "display_name": "Edwin Gonzalez",
+          "email": "Edwin.Gonzalez@vca.com"
+        },
+        "content": "Please make it reusable for all events in the class.",
+        "comment_type": "Text",
+        "status": "Fixed",
+        "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_patient_photo_update.dart&discussionId=695897",
+        "published_date": "2026-01-30T03:47:38.353000+00:00",
+        "last_updated_date": "2026-01-30T03:47:38.353000+00:00"
+      },
+      {
+        "thread_id": 695898,
+        "comment_id": 1,
+        "is_reply": false,
+        "file_name": "check_in_patient_photo_update.dart",
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_patient_photo_update.dart",
+        "lines_modified": {
+          "start_line": 47,
+          "end_line": 47,
+          "side": "right"
+        },
+        "original_lines": {
+          "iteration": 1,
+          "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_patient_photo_update.dart",
+          "start_line": 61,
+          "end_line": 61,
+          "side": "right"
+        },
+        "author": {
+          "display_name": "Edwin Gonzalez",
+          "email": "Edwin.Gonzalez@vca.com"
+        },
+        "content": "Please define the fallback value in the assignment line, like you did for `clientName`, for consistency.",
+        "comment_type": "Text",
+        "status": "Fixed",
+        "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_patient_photo_update.dart&discussionId=695898",
+        "published_date": "2026-01-30T03:49:07.350000+00:00",
+        "last_updated_date": "2026-01-30T03:49:07.350000+00:00"
+      }
+    ],
+    "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_patient_information_bottom_sheet.dart": [
+      {
+        "thread_id": 695899,
+        "comment_id": 1,
+        "is_reply": false,
+        "file_name": "check_in_patient_information_bottom_sheet.dart",
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_patient_information_bottom_sheet.dart",
+        "lines_modified": {
+          "start_line": 74,
+          "end_line": 74,
+          "side": "right"
+        },
+        "original_lines": {
+          "iteration": 1,
+          "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_patient_information_bottom_sheet.dart",
+          "start_line": 105,
+          "end_line": 106,
+          "side": "right"
+        },
+        "author": {
+          "display_name": "Edwin Gonzalez",
+          "email": "Edwin.Gonzalez@vca.com"
+        },
+        "content": "Why not keeping the constants?",
+        "comment_type": "Text",
+        "status": "Fixed",
+        "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_patient_information_bottom_sheet.dart&discussionId=695899",
+        "published_date": "2026-01-30T03:49:56.900000+00:00",
+        "last_updated_date": "2026-01-30T03:49:56.900000+00:00"
+      },
+      {
+        "thread_id": 695900,
+        "comment_id": 1,
+        "is_reply": false,
+        "file_name": "check_in_patient_information_bottom_sheet.dart",
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_patient_information_bottom_sheet.dart",
+        "lines_modified": {
+          "start_line": 74,
+          "end_line": 74,
+          "side": "right"
+        },
+        "original_lines": {
+          "iteration": 1,
+          "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_patient_information_bottom_sheet.dart",
+          "start_line": 108,
+          "end_line": 108,
+          "side": "right"
+        },
+        "author": {
+          "display_name": "Edwin Gonzalez",
+          "email": "Edwin.Gonzalez@vca.com"
+        },
+        "content": "Please create a reusable function for both events",
+        "comment_type": "Text",
+        "status": "Fixed",
+        "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_patient_information_bottom_sheet.dart&discussionId=695900",
+        "published_date": "2026-01-30T03:54:29.897000+00:00",
+        "last_updated_date": "2026-01-30T03:55:45.133000+00:00"
+      },
+      {
+        "thread_id": 696169,
+        "comment_id": 1,
+        "is_reply": false,
+        "file_name": "check_in_patient_information_bottom_sheet.dart",
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_patient_information_bottom_sheet.dart",
+        "lines_modified": {
+          "start_line": 157,
+          "end_line": 162,
+          "side": "right"
+        },
+        "original_lines": {
+          "iteration": 2,
+          "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_patient_information_bottom_sheet.dart",
+          "start_line": 159,
+          "end_line": 166,
+          "side": "right"
+        },
+        "author": {
+          "display_name": "Edwin Gonzalez",
+          "email": "Edwin.Gonzalez@vca.com"
+        },
+        "content": "Some of these parameters are not really used, or redundant.",
+        "comment_type": "Text",
+        "status": "Fixed",
+        "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_patient_information_bottom_sheet.dart&discussionId=696169",
+        "published_date": "2026-02-03T03:37:21.087000+00:00",
+        "last_updated_date": "2026-02-03T03:37:21.087000+00:00"
+      },
+      {
+        "thread_id": 696169,
+        "comment_id": 2,
+        "is_reply": true,
+        "file_name": "check_in_patient_information_bottom_sheet.dart",
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_patient_information_bottom_sheet.dart",
+        "lines_modified": {
+          "start_line": 157,
+          "end_line": 162,
+          "side": "right"
+        },
+        "original_lines": {
+          "iteration": 2,
+          "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_patient_information_bottom_sheet.dart",
+          "start_line": 159,
+          "end_line": 166,
+          "side": "right"
+        },
+        "author": {
+          "display_name": "Alisson Damasceno",
+          "email": "Alisson.Damasceno@vca.com"
+        },
+        "content": "Done in abb46a724c810855d00c67288cd5ba85342b6c16",
+        "comment_type": "Text",
+        "status": "Fixed",
+        "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_patient_information_bottom_sheet.dart&discussionId=696169",
+        "published_date": "2026-02-03T20:34:04.840000+00:00",
+        "last_updated_date": "2026-02-03T20:34:04.840000+00:00"
+      }
+    ],
+    "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_bottom_sheet.dart": [
+      {
+        "thread_id": 695901,
+        "comment_id": 1,
+        "is_reply": false,
+        "file_name": "check_in_bottom_sheet.dart",
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_bottom_sheet.dart",
+        "lines_modified": {
+          "start_line": 38,
+          "end_line": 38,
+          "side": "right"
+        },
+        "original_lines": {
+          "iteration": 1,
+          "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_bottom_sheet.dart",
+          "start_line": 65,
+          "end_line": 65,
+          "side": "right"
+        },
+        "author": {
+          "display_name": "Edwin Gonzalez",
+          "email": "Edwin.Gonzalez@vca.com"
+        },
+        "content": "Please create a reusable function for both events",
+        "comment_type": "Text",
+        "status": "Fixed",
+        "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_bottom_sheet.dart&discussionId=695901",
+        "published_date": "2026-01-30T03:55:32.080000+00:00",
+        "last_updated_date": "2026-01-30T03:55:39.077000+00:00"
+      }
+    ],
+    "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart": [
+      {
+        "thread_id": 695902,
+        "comment_id": 1,
+        "is_reply": false,
+        "file_name": "check_in_consent_screen.dart",
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+        "lines_modified": {
+          "start_line": 41,
+          "end_line": 41,
+          "side": "right"
+        },
+        "original_lines": {
+          "iteration": 1,
+          "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+          "start_line": 52,
+          "end_line": 52,
+          "side": "right"
+        },
+        "author": {
+          "display_name": "Edwin Gonzalez",
+          "email": "Edwin.Gonzalez@vca.com"
+        },
+        "content": "Patient count is not needed here",
+        "comment_type": "Text",
+        "status": "Fixed",
+        "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_consent_screen.dart&discussionId=695902",
+        "published_date": "2026-01-30T03:59:33.827000+00:00",
+        "last_updated_date": "2026-01-30T03:59:33.827000+00:00"
+      },
+      {
+        "thread_id": 695903,
+        "comment_id": 1,
+        "is_reply": false,
+        "file_name": "check_in_consent_screen.dart",
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+        "lines_modified": {
+          "start_line": 41,
+          "end_line": 41,
+          "side": "right"
+        },
+        "original_lines": {
+          "iteration": 1,
+          "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+          "start_line": 48,
+          "end_line": 48,
+          "side": "right"
+        },
+        "author": {
+          "display_name": "Edwin Gonzalez",
+          "email": "Edwin.Gonzalez@vca.com"
+        },
+        "content": "Please create a reusable function for all events",
+        "comment_type": "Text",
+        "status": "Fixed",
+        "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_consent_screen.dart&discussionId=695903",
+        "published_date": "2026-01-30T04:01:47.410000+00:00",
+        "last_updated_date": "2026-01-30T04:01:47.410000+00:00"
+      },
+      {
+        "thread_id": 695904,
+        "comment_id": 1,
+        "is_reply": false,
+        "file_name": "check_in_consent_screen.dart",
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+        "lines_modified": {
+          "start_line": 41,
+          "end_line": 41,
+          "side": "right"
+        },
+        "original_lines": {
+          "iteration": 1,
+          "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+          "start_line": 58,
+          "end_line": 58,
+          "side": "right"
+        },
+        "author": {
+          "display_name": "Edwin Gonzalez",
+          "email": "Edwin.Gonzalez@vca.com"
+        },
+        "content": "Please define this after the function that uses it, so we can read top-down.",
+        "comment_type": "Text",
+        "status": "Fixed",
+        "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_consent_screen.dart&discussionId=695904",
+        "published_date": "2026-01-30T04:02:26.100000+00:00",
+        "last_updated_date": "2026-01-30T04:02:26.100000+00:00"
+      },
+      {
+        "thread_id": 695905,
+        "comment_id": 1,
+        "is_reply": false,
+        "file_name": "check_in_consent_screen.dart",
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+        "lines_modified": {
+          "start_line": 41,
+          "end_line": 41,
+          "side": "right"
+        },
+        "original_lines": {
+          "iteration": 1,
+          "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+          "start_line": 75,
+          "end_line": 75,
+          "side": "right"
+        },
+        "author": {
+          "display_name": "Edwin Gonzalez",
+          "email": "Edwin.Gonzalez@vca.com"
+        },
+        "content": "Please define this after the function that uses it, so we can read top-down.",
+        "comment_type": "Text",
+        "status": "Fixed",
+        "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_consent_screen.dart&discussionId=695905",
+        "published_date": "2026-01-30T04:02:29.170000+00:00",
+        "last_updated_date": "2026-01-30T04:02:29.170000+00:00"
+      },
+      {
+        "thread_id": 695905,
+        "comment_id": 2,
+        "is_reply": true,
+        "file_name": "check_in_consent_screen.dart",
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+        "lines_modified": {
+          "start_line": 41,
+          "end_line": 41,
+          "side": "right"
+        },
+        "original_lines": {
+          "iteration": 1,
+          "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+          "start_line": 75,
+          "end_line": 75,
+          "side": "right"
+        },
+        "author": {
+          "display_name": "Alisson Damasceno",
+          "email": "Alisson.Damasceno@vca.com"
+        },
+        "content": "Done",
+        "comment_type": "Text",
+        "status": "Fixed",
+        "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_consent_screen.dart&discussionId=695905",
+        "published_date": "2026-01-30T20:12:41.340000+00:00",
+        "last_updated_date": "2026-01-30T20:12:41.340000+00:00"
+      },
+      {
+        "thread_id": 695906,
+        "comment_id": 1,
+        "is_reply": false,
+        "file_name": "check_in_consent_screen.dart",
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+        "lines_modified": {
+          "start_line": 41,
+          "end_line": 41,
+          "side": "right"
+        },
+        "original_lines": {
+          "iteration": 1,
+          "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+          "start_line": 80,
+          "end_line": 80,
+          "side": "right"
+        },
+        "author": {
+          "display_name": "Edwin Gonzalez",
+          "email": "Edwin.Gonzalez@vca.com"
+        },
+        "content": "Please log the event only when the navigation is going to happen (If there's internet)",
+        "comment_type": "Text",
+        "status": "Fixed",
+        "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_consent_screen.dart&discussionId=695906",
+        "published_date": "2026-01-30T04:03:46.443000+00:00",
+        "last_updated_date": "2026-01-30T04:03:46.443000+00:00"
+      },
+      {
+        "thread_id": 695906,
+        "comment_id": 2,
+        "is_reply": true,
+        "file_name": "check_in_consent_screen.dart",
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+        "lines_modified": {
+          "start_line": 41,
+          "end_line": 41,
+          "side": "right"
+        },
+        "original_lines": {
+          "iteration": 1,
+          "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+          "start_line": 80,
+          "end_line": 80,
+          "side": "right"
+        },
+        "author": {
+          "display_name": "Alisson Damasceno",
+          "email": "Alisson.Damasceno@vca.com"
+        },
+        "content": "Done in https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/commit/77dc12ff01fb8ee46d1596cfd4a8b49ad8f4da22?refName=refs/heads/dev/alda/amplitude-events-check-in-for-single-appointment",
+        "comment_type": "Text",
+        "status": "Fixed",
+        "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_consent_screen.dart&discussionId=695906",
+        "published_date": "2026-01-30T20:12:37.290000+00:00",
+        "last_updated_date": "2026-01-30T20:12:37.290000+00:00"
+      },
+      {
+        "thread_id": 696066,
+        "comment_id": 1,
+        "is_reply": false,
+        "file_name": "check_in_consent_screen.dart",
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+        "lines_modified": {
+          "start_line": 174,
+          "end_line": 174,
+          "side": "right"
+        },
+        "original_lines": {
+          "iteration": 2,
+          "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+          "start_line": 173,
+          "end_line": 173,
+          "side": "right"
+        },
+        "author": {
+          "display_name": "Edwin Gonzalez",
+          "email": "Edwin.Gonzalez@vca.com"
+        },
+        "content": "Sorry, I made a mistake in my previous comment about this. I checked with VCA and we should log the event even if there's no internet (We care about the tap here, not about what it triggers). You can put the log at the beggining of this function.",
+        "comment_type": "Text",
+        "status": "Fixed",
+        "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_consent_screen.dart&discussionId=696066",
+        "published_date": "2026-02-02T03:12:58.297000+00:00",
+        "last_updated_date": "2026-02-02T03:12:58.297000+00:00"
+      },
+      {
+        "thread_id": 696066,
+        "comment_id": 2,
+        "is_reply": true,
+        "file_name": "check_in_consent_screen.dart",
+        "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+        "lines_modified": {
+          "start_line": 174,
+          "end_line": 174,
+          "side": "right"
+        },
+        "original_lines": {
+          "iteration": 2,
+          "file_path": "/MyCompanion.Flutter/lib/view/screens/check_in/check_in_consent_screen.dart",
+          "start_line": 173,
+          "end_line": 173,
+          "side": "right"
+        },
+        "author": {
+          "display_name": "Alisson Damasceno",
+          "email": "Alisson.Damasceno@vca.com"
+        },
+        "content": "Fixed in 18c85b3e31a2ab0f63b25190902442fc3ee1c06b",
+        "comment_type": "Text",
+        "status": "Fixed",
+        "link": "https://vcavsts.visualstudio.com/VCAProduct/_git/RetrieverPlus/pullrequest/80121?_a=files&path=%2FMyCompanion.Flutter%2Flib%2Fview%2Fscreens%2Fcheck_in%2Fcheck_in_consent_screen.dart&discussionId=696066",
+        "published_date": "2026-02-03T20:27:39.700000+00:00",
+        "last_updated_date": "2026-02-03T20:27:39.700000+00:00"
+      }
+    ]
+  },
+  "general_comments": [],
+  "summary": {
+    "total_comments": 22,
+    "total_threads": 18,
+    "files_with_comments": 7,
+    "status_breakdown": {
+      "Fixed": 18
+    }
+  }
+}

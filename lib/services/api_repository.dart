@@ -9,6 +9,7 @@ import 'package:mvc_app/modules/chat/models/direct_message_conversation.dart';
 import 'package:mvc_app/modules/chat/models/direct_message_item.dart';
 import 'package:mvc_app/modules/chat/models/organization_model.dart';
 import 'package:mvc_app/modules/chat/models/post_reactions_model.dart';
+import 'package:mvc_app/modules/market/pets/shelter_animal.dart';
 import 'package:mvc_app/services/api_service.dart';
 import 'package:mvc_app/services/models/feature_flags.dart';
 
@@ -374,6 +375,12 @@ class ApiRepository {
     String itemId,
   ) async {
     return await _apiService.createOrGetMarketItemInquiry(itemId);
+  }
+
+  Future<ApiResult<VehicleInquiryConversation>> createOrGetShelterAnimalInquiry(
+    ShelterAnimal animal,
+  ) async {
+    return await _apiService.createOrGetShelterAnimalInquiry(animal);
   }
 
   Future<ApiResult<List<VehicleInquiryConversation>>> getListingInquiries() async {

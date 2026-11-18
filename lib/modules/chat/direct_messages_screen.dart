@@ -1,4 +1,5 @@
 // lib/modules/chat/direct_messages_screen.dart
+import 'package:mvc_app/modules/chat/widgets/chat_date_banner.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -1695,7 +1696,7 @@ class DirectMessagesScreenState extends State<DirectMessagesScreen> {
                   ),
                 )
               : Builder(builder: (context) {
-                  final chatItems = _buildChatItems(_messages);
+                  final chatItems = buildChatItems(_messages);
                   final userName = conversation.userFullName ?? conversation.userUsername ?? 'User';
                   return ListView.builder(
                     controller: _messagesScrollController,
@@ -1711,7 +1712,7 @@ class DirectMessagesScreenState extends State<DirectMessagesScreen> {
                       }
                       final item = chatItems[index - 1];
                       if (item is DateTime) {
-                        return _ChatDateBanner(date: item);
+                        return ChatDateBanner(date: item);
                       }
                       final message = item as DirectMessageItem;
                       final isOwnMessage = _currentUserRole?.isAdminOrSuperAdmin == true
@@ -1861,44 +1862,6 @@ class DirectMessagesScreenState extends State<DirectMessagesScreen> {
   }
 }
 
-/// Formats a UTC [DateTime] as a human-readable date label for chat separators,
-/// mirroring the bucketing logic of [_formatMessageTime].
-String _formatDateLabel(DateTime utcDate) {
-  final local = utcDate.toLocal();
-  final now = DateTime.now();
-  final today = DateTime(now.year, now.month, now.day);
-  final msgDay = DateTime(local.year, local.month, local.day);
-  final diff = today.difference(msgDay).inDays;
-
-  if (diff == 0) return 'Today';
-  if (diff == 1) return 'Yesterday';
-  if (diff < 7) {
-    const weekdays = [
-      'Monday', 'Tuesday', 'Wednesday', 'Thursday',
-      'Friday', 'Saturday', 'Sunday',
-    ];
-    return weekdays[local.weekday - 1];
-  }
-  return '${local.month}/${local.day}/${local.year}';
-}
-
-/// Builds a flat list of chat items interspersed with date-separator [DateTime]s.
-/// Each [DateTime] entry represents the local calendar day of the messages that follow.
-List<Object> _buildChatItems(List<DirectMessageItem> messages) {
-  final items = <Object>[];
-  DateTime? lastDay;
-  for (final message in messages) {
-    final local = message.createdAt.toLocal();
-    final msgDay = DateTime(local.year, local.month, local.day);
-    if (lastDay == null || msgDay != lastDay) {
-      items.add(msgDay);
-      lastDay = msgDay;
-    }
-    items.add(message);
-  }
-  return items;
-}
-
 /// WhatsApp-style banner shown at the very top of a conversation's message list.
 class _ConversationStartBanner extends StatelessWidget {
   final String userName;
@@ -1929,37 +1892,6 @@ class _ConversationStartBanner extends StatelessWidget {
             style: TextStyle(
               fontSize: 12,
               color: AppTheme.secondaryHeadingColor,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Compact date-pill separator shown between messages on different calendar days.
-class _ChatDateBanner extends StatelessWidget {
-  final DateTime date;
-
-  const _ChatDateBanner({required this.date});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Center(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-          decoration: BoxDecoration(
-            color: AppTheme.secondaryHeadingColor.withOpacity(0.12),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Text(
-            _formatDateLabel(date),
-            style: TextStyle(
-              fontSize: 11,
-              color: AppTheme.secondaryHeadingColor,
-              fontWeight: FontWeight.w500,
             ),
           ),
         ),
@@ -2604,7 +2536,7 @@ class _ChatScreenState extends State<_ChatScreen> {
                     ),
                   )
                 : Builder(builder: (context) {
-                    final chatItems = _buildChatItems(_messages);
+                    final chatItems = buildChatItems(_messages);
                     final userName = widget.conversation.userFullName ?? widget.conversation.userUsername ?? 'User';
                     return ListView.builder(
                       controller: _messagesScrollController,
@@ -2620,7 +2552,7 @@ class _ChatScreenState extends State<_ChatScreen> {
                         }
                         final item = chatItems[index - 1];
                         if (item is DateTime) {
-                          return _ChatDateBanner(date: item);
+                          return ChatDateBanner(date: item);
                         }
                         final message = item as DirectMessageItem;
                         final isOwnMessage = widget.currentUserRole?.isAdminOrSuperAdmin == true

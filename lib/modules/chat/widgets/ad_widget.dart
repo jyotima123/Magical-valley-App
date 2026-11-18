@@ -24,6 +24,10 @@ class AdWidget extends StatelessWidget {
     this.openDirectly = false,
   });
 
+  /// True while the ad preview dialog is showing, so the app-level back
+  /// handler can dismiss it before popping the screen underneath.
+  static bool isPreviewOpen = false;
+
   bool get _isDarkTheme => theme == AppThemeMode.dark;
 
   Future<void> _launchUrl(String url) async {
@@ -45,7 +49,16 @@ class AdWidget extends StatelessWidget {
     }
   }
 
-  Future<void> _showAdPreview(BuildContext context) {
+  Future<void> _showAdPreview(BuildContext context) async {
+    isPreviewOpen = true;
+    try {
+      await _showAdPreviewDialog(context);
+    } finally {
+      isPreviewOpen = false;
+    }
+  }
+
+  Future<void> _showAdPreviewDialog(BuildContext context) {
     return showGeneralDialog(
       context: context,
       barrierDismissible: true,

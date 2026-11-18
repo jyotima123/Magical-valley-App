@@ -18,6 +18,7 @@ import 'package:mvc_app/modules/cars/vehicle_inquiry_chat_screen.dart';
 import 'package:mvc_app/modules/chat/chat_bloc.dart';
 import 'package:mvc_app/services/api_repository.dart';
 import 'package:mvc_app/modules/chat/chat_service.dart';
+import 'package:mvc_app/modules/chat/widgets/ad_widget.dart';
 import 'package:mvc_app/modules/chat/widgets/chat_app_bar.dart';
 import 'package:mvc_app/utils/chat_menu_actions.dart';
 import 'package:mvc_app/services/amplitude_service.dart';
@@ -40,7 +41,8 @@ class MainScaffold extends StatefulWidget {
 }
 
 class _MainScaffoldState extends State<MainScaffold> {
-  int _selectedTabIndex = 0;
+  // The app opens on the Market tab (actual index 4), not Channels.
+  int _selectedTabIndex = 4;
   final List<GlobalKey<NavigatorState>> _navigatorKeys = [
     GlobalKey<NavigatorState>(), // Channels (0)
     GlobalKey<NavigatorState>(), // Direct (1)
@@ -78,7 +80,7 @@ class _MainScaffoldState extends State<MainScaffold> {
         ScreenStateRegistry.instance.update(const ScreenState(
           screen: 'MainScaffold',
           subState: 'authenticated',
-          metadata: {'tab': 'channels'},
+          metadata: {'tab': 'market'},
         ));
       });
     }
@@ -354,6 +356,13 @@ class _MainScaffoldState extends State<MainScaffold> {
   }
 
   Future<bool> _onWillPop() async {
+    // Dialogs (e.g. the ad preview) live on the root navigator, above the
+    // per-tab navigators, so back must dismiss them first.
+    if (AdWidget.isPreviewOpen) {
+      Navigator.of(context, rootNavigator: true).pop();
+      return false;
+    }
+
     // _selectedTabIndex is already the actual index
     final currentNavigator = _navigatorKeys[_selectedTabIndex].currentState;
 

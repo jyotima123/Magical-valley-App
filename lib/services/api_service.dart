@@ -9,6 +9,7 @@ import 'package:mvc_app/modules/chat/models/direct_message_conversation.dart';
 import 'package:mvc_app/modules/chat/models/direct_message_item.dart';
 import 'package:mvc_app/modules/chat/models/organization_model.dart';
 import 'package:mvc_app/modules/chat/models/post_reactions_model.dart';
+import 'package:mvc_app/modules/market/pets/shelter_animal.dart';
 import 'package:mvc_app/services/api/supabase_api_service.dart'
     show AdminAssignmentResult;
 import 'package:mvc_app/services/api_repository.dart';
@@ -325,6 +326,13 @@ abstract class ApiService {
   /// sold item unless the buyer already has a conversation about it.
   Future<ApiResult<VehicleInquiryConversation>> createOrGetMarketItemInquiry(
     String itemId,
+  );
+
+  /// Opens (or resumes) an adopter's conversation about a shelter animal,
+  /// mirroring it into `market_items` on first contact. The shelter's
+  /// organization answers, resolved server-side from the animal's source.
+  Future<ApiResult<VehicleInquiryConversation>> createOrGetShelterAnimalInquiry(
+    ShelterAnimal animal,
   );
 
   /// Every Market inquiry the signed-in user takes part in — vehicles and

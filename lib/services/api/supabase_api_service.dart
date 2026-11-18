@@ -15,6 +15,7 @@ import 'package:mvc_app/modules/chat/models/direct_message_conversation.dart';
 import 'package:mvc_app/modules/chat/models/direct_message_item.dart';
 import 'package:mvc_app/modules/chat/models/organization_model.dart';
 import 'package:mvc_app/modules/chat/models/post_reactions_model.dart';
+import 'package:mvc_app/modules/market/pets/shelter_animal.dart';
 import 'package:mvc_app/services/api_repository.dart';
 import 'package:mvc_app/services/api_service.dart';
 import 'package:mvc_app/services/models/feature_flags.dart';
@@ -2518,10 +2519,15 @@ class SupabaseApiService implements ApiService {
           *,
           admin_organizations!inner(organization_id, assigned_at)
         ''')
-          .eq('admin_organizations.organization_id', organizationId)
-          .order('admin_organizations.assigned_at', ascending: false);
+          .eq('admin_organizations.organization_id', organizationId);
 
-      final admins = (response as List<dynamic>).map((userData) {
+      // PostgREST can't order parent rows by a column of a to-many embed
+      // (`.order('admin_organizations.assigned_at')` is rejected with
+      // PGRST100), so newest assignment first is sorted here instead.
+      final rows = List<Map<String, dynamic>>.from(response as List<dynamic>)
+        ..sort((a, b) => _latestAssignedAt(b).compareTo(_latestAssignedAt(a)));
+
+      final admins = rows.map((userData) {
         // Clean up the data by removing the junction table info
         final cleanData = Map<String, dynamic>.from(userData);
         cleanData.remove('admin_organizations');
@@ -2538,6 +2544,20 @@ class SupabaseApiService implements ApiService {
       final apiError = _handleError(e);
       return ApiResult.error(apiError.message);
     }
+  }
+
+  /// The most recent `assigned_at` among a row's embedded
+  /// `admin_organizations`, or the epoch when there is none, so rows without a
+  /// date sort last (the old query's `nullslast`).
+  static DateTime _latestAssignedAt(Map<String, dynamic> row) {
+    var latest = DateTime.fromMillisecondsSinceEpoch(0);
+    final links = row['admin_organizations'];
+    if (links is! List) return latest;
+    for (final link in links) {
+      final at = link is Map ? DateTime.tryParse('${link['assigned_at']}') : null;
+      if (at != null && at.isAfter(latest)) latest = at;
+    }
+    return latest;
   }
 
   /// Gets all organizations that a user is admin of
@@ -2561,10 +2581,13 @@ class SupabaseApiService implements ApiService {
           organization_categories!inner(category_id),
           admin_organizations!inner(user_id, assigned_at)
         ''')
-          .eq('admin_organizations.user_id', userId)
-          .order('admin_organizations.assigned_at', ascending: false);
+          .eq('admin_organizations.user_id', userId);
 
-      final organizations = (response as List<dynamic>).map((orgData) {
+      // Sorted here rather than in the query; see getOrganizationAdmins.
+      final rows = List<Map<String, dynamic>>.from(response as List<dynamic>)
+        ..sort((a, b) => _latestAssignedAt(b).compareTo(_latestAssignedAt(a)));
+
+      final organizations = rows.map((orgData) {
         // Extract category IDs from the junction table data
         final categoryIds = <String>[];
         if (orgData['organization_categories'] != null) {
@@ -5013,6 +5036,45 @@ apiService.streamPostReactions('post-id').listen((reactions) {
     } catch (e) {
       _logError('createOrGetMarketItemInquiry', e);
       // "This item has already been sold" is for the buyer to read as-is.
+      if (e is PostgrestException && e.message.isNotEmpty) {
+        return ApiResult.error(e.message);
+      }
+      final apiError = _handleError(e);
+      return ApiResult.error(apiError.message);
+    }
+  }
+
+  @override
+  Future<ApiResult<VehicleInquiryConversation>> createOrGetShelterAnimalInquiry(
+    ShelterAnimal animal,
+  ) async {
+    try {
+      if (_client.auth.currentUser == null) {
+        return const ApiResult.error('User not authenticated');
+      }
+
+      // The organization that answers is resolved from p_source server-side;
+      // the snapshot only describes the animal.
+      final conversationId = await _client.rpc(
+        'create_or_get_sourced_item_inquiry',
+        params: {
+          'p_source': animal.source,
+          'p_external_id': animal.externalId,
+          'p_item': animal.toInquirySnapshot(),
+        },
+      ) as String;
+
+      final view = await _client
+          .from('vehicle_inquiry_conversations_view')
+          .select()
+          .eq('id', conversationId)
+          .single();
+
+      return ApiResult.success(VehicleInquiryConversation.fromJson(view));
+    } catch (e) {
+      _logError('createOrGetShelterAnimalInquiry', e);
+      // "Not set up to receive messages yet" is an operator task, not a bug —
+      // surface it as-is instead of a generic failure.
       if (e is PostgrestException && e.message.isNotEmpty) {
         return ApiResult.error(e.message);
       }

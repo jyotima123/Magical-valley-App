@@ -4,6 +4,7 @@ import 'package:mvc_app/app_theme.dart';
 import 'package:mvc_app/modules/cars/vehicle_image.dart';
 import 'package:mvc_app/modules/cars/vehicle_inquiries_list_screen.dart';
 import 'package:mvc_app/modules/cars/vehicle_inquiry_chat_screen.dart';
+import 'package:mvc_app/modules/chat/widgets/image_carousel_screen.dart';
 import 'package:mvc_app/modules/market/add_market_item_screen.dart';
 import 'package:mvc_app/modules/market/listing_contact.dart';
 import 'package:mvc_app/modules/market/market_category.dart';
@@ -40,6 +41,10 @@ class _MarketItemDetailScreenState extends State<MarketItemDetailScreen> {
   late MarketItem _item;
   int _currentPage = 0;
   bool _updatingSold = false;
+
+  /// Superadmins grant promotion (migration 089); nobody else sees the menu.
+  bool _canPromote = false;
+  bool _updatingPromotion = false;
   bool _startingChat = false;
 
   bool get _isOwner => _item.isOwnedBy(_repo.currentUserId);
@@ -49,6 +54,9 @@ class _MarketItemDetailScreenState extends State<MarketItemDetailScreen> {
     super.initState();
     _item = widget.item;
     _pageCtrl = PageController();
+    _repo.isSuperadmin().then((value) {
+      if (mounted && value) setState(() => _canPromote = true);
+    });
     // The carousel only builds the current page, so pull the rest of the
     // gallery onto disk up front and swiping is instant.
     VehicleImageCache.prefetch(_item.images);
@@ -81,6 +89,86 @@ class _MarketItemDetailScreenState extends State<MarketItemDetailScreen> {
       ),
     );
     if (updated == true) _reload();
+  }
+
+  /// Promotes for [days], or ends the promotion when null.
+  Future<void> _setPromotion(int? days) async {
+    setState(() => _updatingPromotion = true);
+    try {
+      await _repo.setPromotion(
+        _item.id,
+        days == null ? null : DateTime.now().add(Duration(days: days)),
+      );
+      await _reload();
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            days == null ? 'Promotion ended' : 'Promoted for $days days',
+          ),
+        ),
+      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to update promotion: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _updatingPromotion = false);
+    }
+  }
+
+  Widget _buildPromoteMenu() {
+    if (_updatingPromotion) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 14),
+          child: SizedBox(
+            width: 18,
+            height: 18,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: AppTheme.accentPrimary,
+            ),
+          ),
+        ),
+      );
+    }
+    return PopupMenuButton<int>(
+      icon: Icon(
+        _item.isPromoted
+            ? Icons.workspace_premium
+            : Icons.workspace_premium_outlined,
+        color: _item.isPromoted ? AppTheme.accentPrimary : null,
+      ),
+      tooltip: 'Promotion',
+      // 0 stands for "stop"; anything else is a number of days.
+      onSelected: (days) => _setPromotion(days == 0 ? null : days),
+      itemBuilder: (_) => [
+        for (final days in const [7, 30])
+          PopupMenuItem(
+            value: days,
+            child: Text(
+              _item.isPromoted
+                  ? 'Promote for $days days from now'
+                  : 'Promote for $days days',
+              style: const TextStyle(fontFamily: 'Poppins', fontSize: 14),
+            ),
+          ),
+        if (_item.isPromoted)
+          const PopupMenuItem(
+            value: 0,
+            child: Text(
+              'Stop promoting',
+              style: TextStyle(fontFamily: 'Poppins', fontSize: 14),
+            ),
+          ),
+      ],
+    );
   }
 
   Future<void> _toggleSold() async {
@@ -186,6 +274,19 @@ class _MarketItemDetailScreenState extends State<MarketItemDetailScreen> {
     );
   }
 
+  /// Full-screen, zoomable view of the photos, opened on the tapped one.
+  void _openPhotos(List<String> urls, int index) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ImageCarouselScreen(
+          imageUrls: urls,
+          initialIndex: index,
+          theme: AppThemeMode.light,
+        ),
+      ),
+    );
+  }
+
   Widget _buildAppBar() {
     final images = _item.images;
     return SliverAppBar(
@@ -194,6 +295,7 @@ class _MarketItemDetailScreenState extends State<MarketItemDetailScreen> {
       backgroundColor: AppTheme.headerBackground,
       foregroundColor: AppTheme.black,
       actions: [
+        if (_canPromote) _buildPromoteMenu(),
         if (_isOwner) ...[
           IconButton(
             icon: const Icon(Icons.edit_outlined),
@@ -253,10 +355,16 @@ class _MarketItemDetailScreenState extends State<MarketItemDetailScreen> {
                     controller: _pageCtrl,
                     itemCount: images.length,
                     onPageChanged: (i) => setState(() => _currentPage = i),
-                    itemBuilder: (_, i) => VehicleImage(
-                      url: images[i],
-                      fit: BoxFit.cover,
-                      placeholder: (_) => _imagePlaceholder(),
+                    itemBuilder: (_, i) => GestureDetector(
+                      onTap: () => _openPhotos(images, i),
+                      child: VehicleImage(
+                        url: images[i],
+                        fit: BoxFit.cover,
+                        alignment: _item.isInCategory(kPetsCategory)
+                            ? Alignment.topCenter
+                            : Alignment.center,
+                        placeholder: (_) => _imagePlaceholder(),
+                      ),
                     ),
                   ),
                   if (images.length > 1)

@@ -423,7 +423,10 @@ void main() {
           home: Scaffold(
             body: CarsCarouselCard(
               name: 'Cars',
-              cars: [_car(id: 'a'), _car(id: 'b')],
+              cars: [
+                _car(id: 'a'),
+                _car(id: 'b'),
+              ],
               onTap: () => opened++,
             ),
           ),
@@ -467,6 +470,11 @@ void main() {
             {'slug': 'furniture', 'name': 'Furniture', 'sort_order': 90},
             {'slug': 'pets', 'name': 'Pets', 'sort_order': 100},
           ]);
+        }
+        // Nothing is promoted; the carousel query must not echo the list.
+        if (url.path.endsWith('/market_items') &&
+            url.queryParameters.containsKey('promoted_until')) {
+          return '[]';
         }
         if (url.path.endsWith('/market_items')) {
           return jsonEncode([
@@ -529,6 +537,62 @@ void main() {
         requests.last.queryParameters['or'],
         '(category.eq.furniture,secondary_category.eq.furniture)',
       );
+    });
+  });
+
+  group('Promoted listings', () {
+    testWidgets('appear in the strip and stay in the list', (tester) async {
+      // Tall enough for the strip and both cards to be built.
+      tester.view.physicalSize = const Size(800, 1800);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+
+      final client = _fakeClient([], (url) {
+        if (url.path.endsWith('/market_items') &&
+            url.queryParameters.containsKey('promoted_until')) {
+          return jsonEncode([
+            {
+              ..._itemRow(id: 'p', title: 'Walnut desk'),
+              'promoted_until': '2099-01-01T00:00:00Z',
+            },
+          ]);
+        }
+        if (url.path.endsWith('/market_items')) {
+          return jsonEncode([
+            {
+              ..._itemRow(id: 'p', title: 'Walnut desk'),
+              'promoted_until': '2099-01-01T00:00:00Z',
+            },
+            _itemRow(id: 'a', title: 'Oak dining table'),
+          ]);
+        }
+        return '[]';
+      });
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: MarketCategoryScreen(
+            category: const MarketCategory(
+              slug: 'furniture',
+              name: 'Furniture',
+            ),
+            repository: MarketRepository(client),
+          ),
+        ),
+      );
+      await _settle(tester);
+
+      expect(find.text('Promoted'), findsNWidgets(2)); // strip header + tag
+      expect(find.text('Walnut desk'), findsNWidgets(2)); // strip + list
+      expect(find.text('Oak dining table'), findsOneWidget);
+    });
+
+    test('an expired promotion is not promoted', () {
+      final item = MarketItem.fromJson({
+        ..._itemRow(),
+        'promoted_until': '2000-01-01T00:00:00Z',
+      });
+      expect(item.isPromoted, isFalse);
     });
   });
 

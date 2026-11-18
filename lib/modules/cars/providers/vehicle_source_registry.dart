@@ -83,7 +83,9 @@ class VehicleSourceRegistry {
       final rows = await Supabase.instance.client
           .from('dealer_sources')
           .select('source, provider, kind, display_name')
-          .eq('is_active', true);
+          .eq('is_active', true)
+          // The registry also holds the shelter feed (088), which is not cars.
+          .eq('listing_type', 'vehicle');
 
       final entries = (rows as List)
           .map((e) => VehicleSourceEntry.fromJson(e as Map<String, dynamic>))

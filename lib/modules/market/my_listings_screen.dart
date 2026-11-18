@@ -431,6 +431,11 @@ class _MyListingTile extends StatelessWidget {
                         ? VehicleImage(
                             url: imageUrl,
                             fit: BoxFit.cover,
+                            alignment:
+                                (listing.item?.isInCategory(kPetsCategory) ??
+                                    false)
+                                ? Alignment.topCenter
+                                : Alignment.center,
                             decodeWidth: 200,
                             placeholder: (_) => _placeholder(),
                           )

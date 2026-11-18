@@ -19,7 +19,13 @@ class MarketItem {
   final List<String> videos;
   final String? contactPhone;
   final bool isSold;
-  final String createdBy;
+
+  /// Null only for a shelter animal mirrored here when someone messaged about
+  /// it (migration 088); those are owned by an organization, not a person.
+  final String? createdBy;
+
+  /// Shown in its category's Promoted carousel until then (migration 089).
+  final DateTime? promotedUntil;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -37,7 +43,8 @@ class MarketItem {
     this.videos = const [],
     this.contactPhone,
     this.isSold = false,
-    required this.createdBy,
+    this.createdBy,
+    this.promotedUntil,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -59,7 +66,10 @@ class MarketItem {
       videos: _splitComma(json['videos'] as String?),
       contactPhone: json['contact_phone'] as String?,
       isSold: (json['is_sold'] as bool?) ?? false,
-      createdBy: json['created_by'] as String,
+      createdBy: json['created_by'] as String?,
+      promotedUntil: json['promoted_until'] != null
+          ? DateTime.parse(json['promoted_until'] as String)
+          : null,
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
     );
@@ -85,6 +95,9 @@ class MarketItem {
   bool get isFree => price == 0;
 
   bool get hasPromo => promotion != null && promotion! > 0;
+
+  bool get isPromoted =>
+      promotedUntil != null && promotedUntil!.isAfter(DateTime.now());
 
   String get displayPrice => isFree ? 'Free' : formatPrice(price);
 

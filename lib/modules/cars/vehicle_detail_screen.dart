@@ -6,6 +6,7 @@ import 'package:mvc_app/modules/cars/vehicle_image.dart';
 import 'package:mvc_app/modules/cars/vehicle_inquiries_list_screen.dart';
 import 'package:mvc_app/modules/cars/vehicle_inquiry_chat_screen.dart';
 import 'package:mvc_app/modules/cars/vehicle_listing.dart';
+import 'package:mvc_app/modules/chat/widgets/image_carousel_screen.dart';
 import 'package:mvc_app/modules/market/listing_contact.dart';
 import 'package:mvc_app/services/api_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -302,6 +303,19 @@ class _VehicleDetailScreenState extends State<VehicleDetailScreen> {
     );
   }
 
+  /// Full-screen, zoomable view of the photos, opened on the tapped one.
+  void _openPhotos(List<String> urls, int index) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ImageCarouselScreen(
+          imageUrls: urls,
+          initialIndex: index,
+          theme: AppThemeMode.light,
+        ),
+      ),
+    );
+  }
+
   Widget _buildAppBar() {
     final hasImages = v.images.isNotEmpty;
     return SliverAppBar(
@@ -347,10 +361,13 @@ class _VehicleDetailScreenState extends State<VehicleDetailScreen> {
                     controller: _pageCtrl,
                     itemCount: v.images.length,
                     onPageChanged: (i) => setState(() => _currentPage = i),
-                    itemBuilder: (_, i) => VehicleImage(
-                      url: v.images[i],
-                      fit: BoxFit.cover,
-                      placeholder: (_) => _imagePlaceholder(),
+                    itemBuilder: (_, i) => GestureDetector(
+                      onTap: () => _openPhotos(v.images, i),
+                      child: VehicleImage(
+                        url: v.images[i],
+                        fit: BoxFit.cover,
+                        placeholder: (_) => _imagePlaceholder(),
+                      ),
                     ),
                   ),
                   if (v.images.length > 1)

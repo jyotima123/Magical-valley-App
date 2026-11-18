@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mvc_app/app_theme.dart';
 import 'package:mvc_app/modules/cars/vehicle_inquiry_conversation.dart';
 import 'package:mvc_app/modules/chat/models/direct_message_item.dart';
+import 'package:mvc_app/modules/chat/widgets/chat_date_banner.dart';
 import 'package:mvc_app/modules/chat/widgets/image_converter_service.dart';
 import 'package:mvc_app/modules/market/market_category.dart';
 import 'package:mvc_app/modules/market/market_item.dart';
@@ -215,16 +216,22 @@ class _VehicleInquiryChatScreenState extends State<VehicleInquiryChatScreen> {
         children: [
           _ListingBanner(conv: conv),
           Expanded(
-            child: ListView.builder(
-              controller: _scrollCtrl,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              itemCount: _messages.length,
-              itemBuilder: (_, i) {
-                final msg = _messages[i];
-                final isMe = msg.senderId == _currentUserId;
-                return _MessageBubble(message: msg, isMe: isMe);
-              },
-            ),
+            child: Builder(builder: (context) {
+              final chatItems = buildChatItems(_messages);
+              return ListView.builder(
+                controller: _scrollCtrl,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                itemCount: chatItems.length,
+                itemBuilder: (_, i) {
+                  final item = chatItems[i];
+                  if (item is DateTime) return ChatDateBanner(date: item);
+                  final msg = item as DirectMessageItem;
+                  final isMe = msg.senderId == _currentUserId;
+                  return _MessageBubble(message: msg, isMe: isMe);
+                },
+              );
+            }),
           ),
           _buildInput(),
         ],

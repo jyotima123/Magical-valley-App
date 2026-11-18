@@ -97,6 +97,7 @@ class VehicleImage extends StatelessWidget {
     this.width,
     this.height,
     this.fit = BoxFit.cover,
+    this.alignment = Alignment.center,
     this.decodeWidth,
     this.placeholder,
     this.errorWidget,
@@ -106,6 +107,12 @@ class VehicleImage extends StatelessWidget {
   final double? width;
   final double? height;
   final BoxFit fit;
+
+  /// Which part survives a [BoxFit.cover] crop. Centered by default; pet
+  /// photos pass [Alignment.topCenter] so a tall photo keeps its top (the
+  /// animal's face) rather than its middle, while a wide photo is still
+  /// trimmed evenly on both sides.
+  final Alignment alignment;
 
   /// Target decode width in physical pixels. Set it for list thumbnails so a
   /// 4000px dealer photo is not decoded at full size into memory.
@@ -122,6 +129,7 @@ class VehicleImage extends StatelessWidget {
       width: width,
       height: height,
       fit: fit,
+      alignment: alignment,
       memCacheWidth: decodeWidth,
       placeholder: (context, _) =>
           placeholder?.call(context) ?? _defaultPlaceholder(),

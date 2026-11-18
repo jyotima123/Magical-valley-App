@@ -6,6 +6,10 @@ import 'package:flutter/material.dart';
 /// depend on this literal.
 const String kCarsCategory = 'cars_trucks';
 
+/// The category the shelter's adoptable animals are shown in, above the
+/// community listings (migration 088).
+const String kPetsCategory = 'pets';
+
 /// A row of `market_categories`. Which categories exist, what they are called
 /// and their order is data, so a category can be renamed, reordered or hidden
 /// without a release; only its icon is chosen here.
@@ -29,6 +33,8 @@ class MarketCategory {
   }
 
   bool get isCars => slug == kCarsCategory;
+
+  bool get isPets => slug == kPetsCategory;
 
   IconData get icon => iconFor(slug);
 

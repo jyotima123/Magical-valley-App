@@ -687,17 +687,15 @@ class _AllChannelsList extends StatelessWidget {
     this.onRefresh,
   });
 
-  List<Organization> _sortOrganizationsByPopularity(
+  List<Organization> _sortOrganizationsByName(
     List<Organization> organizations,
   ) {
     final sorted = List<Organization>.from(organizations);
-    sorted.sort((a, b) {
-      final followerComparison = b.followerCount.compareTo(a.followerCount);
-      if (followerComparison != 0) return followerComparison;
-      return a.name.toLowerCase().trim().compareTo(
+    sorted.sort(
+      (a, b) => a.name.toLowerCase().trim().compareTo(
         b.name.toLowerCase().trim(),
-      );
-    });
+      ),
+    );
     return sorted;
   }
 
@@ -715,7 +713,7 @@ class _AllChannelsList extends StatelessWidget {
               ? state.organizations
               : (state as OrganizationFollowLoading).organizations;
 
-          final sortedOrganizations = _sortOrganizationsByPopularity(
+          final sortedOrganizations = _sortOrganizationsByName(
             allOrganizations,
           );
 

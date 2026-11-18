@@ -8,6 +8,7 @@ import 'package:mvc_app/modules/cars/vehicle_detail_screen.dart';
 import 'package:mvc_app/modules/cars/vehicle_image.dart';
 import 'package:mvc_app/modules/cars/vehicle_listing.dart';
 import 'package:mvc_app/modules/cars/vehicle_search_filters.dart';
+import 'package:mvc_app/modules/market/widgets/listing_row_card.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CarsVehiclesScreen extends StatefulWidget {
@@ -803,130 +804,102 @@ class _VehicleCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final hasPromo =
         listing.promotion != null && listing.promotion! > 0;
+    const priceStyle = TextStyle(
+      fontFamily: 'Poppins',
+      fontSize: 16,
+      fontWeight: FontWeight.w800,
+    );
 
-    final card = Container(
-      margin: const EdgeInsets.only(bottom: 14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+    final card = ListingRowCard(
+      // Car cards carry more text than the square is tall; stretch the photo
+      // so it has no empty band below it.
+      fillHeight: true,
+      thumbnail: _buildImage(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildImage(),
-          Padding(
-            padding: const EdgeInsets.all(14),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          Wrap(
+            spacing: 6,
+            runSpacing: 4,
+            children: [
+              if (listing.isSold) const _SoldListBadge(),
+              if (listing.isFromDealerFeed) const _DealerBadge(),
+              _StatusBadge(status: listing.status),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(
+            listing.displayTitle,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontFamily: 'Poppins',
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+              color: AppTheme.black,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Wrap(
+            spacing: 8,
+            children: [
+              if (listing.color != null) _Detail(listing.color!),
+              if (listing.body != null) _Detail(listing.body!),
+              _Detail(listing.displayMileage),
+              if (listing.fuel != null) _Detail(listing.fuel!),
+            ],
+          ),
+          const SizedBox(height: 6),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
               children: [
-                Row(
-                  children: [
-                    if (listing.isSold) ...[
-                      const _SoldListBadge(),
-                      const SizedBox(width: 6),
-                    ],
-                    if (listing.isFromDealerFeed) ...[
-                      const _DealerBadge(),
-                      const SizedBox(width: 6),
-                    ],
-                    _StatusBadge(status: listing.status),
-                    const Spacer(),
-                    if (listing.location != null)
-                      Row(
-                        children: [
-                          Icon(Icons.location_on,
-                              size: 12, color: Colors.grey.shade400),
-                          const SizedBox(width: 2),
-                          Text(
-                            listing.location!,
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: 11,
-                              color: Colors.grey.shade500,
-                            ),
-                          ),
-                        ],
-                      ),
-                  ],
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  listing.displayTitle,
-                  style: const TextStyle(
-                    fontFamily: 'Poppins',
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: AppTheme.black,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Wrap(
-                  spacing: 8,
-                  children: [
-                    if (listing.color != null)
-                      _Detail(listing.color!),
-                    if (listing.body != null)
-                      _Detail(listing.body!),
-                    _Detail(listing.displayMileage),
-                    if (listing.fuel != null)
-                      _Detail(listing.fuel!),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.baseline,
-                  textBaseline: TextBaseline.alphabetic,
-                  children: [
-                    if (hasPromo) ...[
-                      Text(
-                        listing.displayPrice,
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 13,
-                          color: Colors.grey.shade400,
-                          decoration: TextDecoration.lineThrough,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        listing.displayPromoPrice,
-                        style: const TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 18,
-                          fontWeight: FontWeight.w800,
-                          color: AppTheme.accentPrimary,
-                        ),
-                      ),
-                    ] else
-                      Text(
-                        listing.displayPrice,
-                        style: const TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 18,
-                          fontWeight: FontWeight.w800,
-                          color: AppTheme.black,
-                        ),
-                      ),
-                    const Spacer(),
-                    Text(
-                      'Stock #${listing.stock}',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: 11,
-                        color: Colors.grey.shade400,
-                      ),
+                if (hasPromo) ...[
+                  Text(
+                    listing.displayPrice,
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 12,
+                      color: Colors.grey.shade400,
+                      decoration: TextDecoration.lineThrough,
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    listing.displayPromoPrice,
+                    style:
+                        priceStyle.copyWith(color: AppTheme.accentPrimary),
+                  ),
+                ] else
+                  Text(
+                    listing.displayPrice,
+                    style: priceStyle.copyWith(color: AppTheme.black),
+                  ),
               ],
             ),
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Expanded(
+                child: listing.location != null
+                    ? ListingLocationLine(listing.location!)
+                    : const SizedBox.shrink(),
+              ),
+              const SizedBox(width: 6),
+              Text(
+                'Stock #${listing.stock}',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 11,
+                  color: Colors.grey.shade400,
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -938,64 +911,34 @@ class _VehicleCard extends StatelessWidget {
 
   Widget _buildImage() {
     final url = listing.firstImageUrl;
-    final image = ClipRRect(
-      borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
-      child: url != null
-          ? VehicleImage(
-              url: url,
-              height: 180,
-              width: double.infinity,
-              fit: BoxFit.cover,
-              // Cards are at most a screen wide; decoding a full-size dealer
-              // photo for a 180px-tall thumbnail is pure memory pressure.
-              decodeWidth: 800,
-              placeholder: (_) => _placeholder(),
-            )
-          : _placeholder(),
-    );
-    if (!listing.isSold) return image;
-    return Stack(
-      children: [
-        image,
-        Positioned.fill(
-          child: Center(
-            child: Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 18, vertical: 6),
-              decoration: BoxDecoration(
-                color: Colors.red.shade600.withOpacity(0.9),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Text(
-                'SOLD',
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                  color: Colors.white,
-                  letterSpacing: 2,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
+    final image = url != null
+        ? VehicleImage(
+            url: url,
+            height: double.infinity,
+            width: double.infinity,
+            fit: BoxFit.cover,
+            // A 120px-wide thumbnail; decoding a full-size dealer photo for
+            // it is pure memory pressure.
+            decodeWidth: 400,
+            placeholder: (_) => _placeholder(),
+          )
+        : _placeholder();
+    return listing.isSold ? SoldThumbStamp(child: image) : image;
   }
 
   Widget _placeholder() {
     return Container(
-      height: 160,
-      width: double.infinity,
       color: const Color(0xFFF0F0F0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(Icons.directions_car_outlined,
-              size: 48, color: Colors.grey.shade300),
+              size: 40, color: Colors.grey.shade300),
           const SizedBox(height: 4),
           Text(
             listing.make,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontFamily: 'Poppins',
               fontSize: 12,
