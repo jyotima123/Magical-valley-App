@@ -7,7 +7,7 @@ const char* ssid = "ALISSON";
 const char* password = "#91004569#";
 
 // Discord Webhook URL
-const char* webhookUrl = "https://discord.com/api/webhooks/1228500829879668736/mqulP0SmfzQ2jicxTiuz-7__aCKkkomt8mi6sbT4SBqhxZzH2c5krxSVC6J-FB1jQlKT";
+const char* webhookUrl = Discord_Webhook_URL;
 
 // Relay Pin Definitions (using GPIO numbers)
 const int WATER_INLET_PIN = 12;   // GPIO5 (D1) // Swapped with green lamp
